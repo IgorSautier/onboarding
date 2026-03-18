@@ -6,12 +6,12 @@
 <title>Nevios — Espace Client</title>
 <style>
 :root{
-  --purple:#7C3AED;--purple-mid:#A78BFA;--purple-light:#EDE9FE;--purple-dark:#5B21B6;
-  --sidebar:#1E1B4B;
-  --bg:#F8F7FF;--white:#FFFFFF;
+  --purple:#8C3CDD;--purple-mid:#B87AEE;--purple-light:#F3E8FF;--purple-dark:#6B1FB8;
+  --sidebar:#18103A;
+  --bg:#F9F7FF;--white:#FFFFFF;
   --border:#E5E7EB;
   --t1:#111827;--t2:#374151;--t3:#6B7280;--t4:#9CA3AF;
-  --green:#16A34A;--green-light:#DCFCE7;
+  --green:#96DB4D;--green-light:#EDFACC;
   --red:#DC2626;--red-light:#FEE2E2;
   --blue:#2563EB;--blue-light:#DBEAFE;
   --shadow:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
@@ -33,10 +33,10 @@ a{text-decoration:none;color:inherit}
 @keyframes successPop{0%{opacity:0;transform:scale(.85)}60%{transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
 
 /* ── LOGIN ── */
-.login-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#0F0A2E 0%,#1E1B4B 40%,#4C1D95 75%,#7C3AED 100%)}
+.login-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#0A0718 0%,#18103A 40%,#3D1580 75%,#8C3CDD 100%)}
 .login-card{background:var(--white);border-radius:20px;padding:40px;width:100%;max-width:420px;box-shadow:var(--shadow-lg);animation:fadeInUp .5s ease both}
 .login-logo{text-align:center;margin-bottom:24px}
-.login-logo img{height:34px;width:auto}
+.login-logo img{height:56px;width:auto}
 .login-title{font-size:21px;font-weight:800;color:var(--t1);text-align:center;margin-bottom:5px}
 .login-sub{font-size:13px;color:var(--t3);text-align:center;margin-bottom:28px}
 .lf{margin-bottom:16px}
@@ -57,7 +57,7 @@ a{text-decoration:none;color:inherit}
 .sidebar{width:var(--sidebar-w);background:var(--sidebar);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;transition:transform .3s}
 .sb-header{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
 .sb-logo{margin-bottom:14px}
-.sb-logo img{height:26px;width:auto;filter:brightness(0) invert(1)}
+.sb-logo img{height:36px;width:auto}
 .sb-client{background:rgba(124,58,237,.22);border:1px solid rgba(124,58,237,.35);border-radius:var(--r-sm);padding:10px 12px}
 .sb-client-lbl{font-size:10px;font-weight:600;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
 .sb-client-name{font-size:14px;font-weight:700;color:#fff}
@@ -104,7 +104,7 @@ a{text-decoration:none;color:inherit}
 .stat-lbl{font-size:12px;color:var(--t3)}
 
 /* ── PROGRESS HERO ── */
-.progress-hero{background:linear-gradient(135deg,#0F0A2E 0%,#1E1B4B 50%,#4C1D95 100%);border-radius:var(--r);padding:26px 28px;color:#fff;position:relative;overflow:hidden;box-shadow:var(--shadow-md)}
+.progress-hero{background:linear-gradient(135deg,#0A0718 0%,#18103A 50%,#3D1580 100%);border-radius:var(--r);padding:26px 28px;color:#fff;position:relative;overflow:hidden;box-shadow:var(--shadow-md)}
 .progress-hero::after{content:'';position:absolute;right:-50px;top:-50px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.03)}
 .ph-label{font-size:11px;font-weight:600;opacity:.5;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
 .ph-phase{font-size:19px;font-weight:700;margin-bottom:18px}
@@ -114,6 +114,8 @@ a{text-decoration:none;color:inherit}
 .ph-pct{font-size:52px;font-weight:900;line-height:1;position:absolute;right:28px;top:22px;opacity:.1}
 
 /* ── TIMELINE ── */
+#timeline{position:relative}
+#timeline::before{content:'';position:absolute;left:19px;top:19px;bottom:19px;width:2px;background:var(--border);z-index:0}
 .tl-item{display:flex;gap:14px;padding-bottom:26px}
 .tl-item:last-child{padding-bottom:0}
 .tl-left{display:flex;flex-direction:column;align-items:center;width:38px;flex-shrink:0}
@@ -121,8 +123,6 @@ a{text-decoration:none;color:inherit}
 .tl-icon.done{background:var(--green);border-color:var(--green);color:#fff}
 .tl-icon.active{background:var(--purple);border-color:var(--purple);color:#fff;box-shadow:0 0 0 4px var(--purple-light)}
 .tl-icon.pending{background:var(--bg);border-color:var(--border);color:var(--t4)}
-.tl-line{width:2px;flex:1;background:var(--border);margin-top:4px;min-height:16px}
-.tl-line.done{background:var(--green)}
 .tl-body{padding-top:6px;flex:1}
 .tl-status{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:2px}
 .tl-status.done{color:var(--green)}.tl-status.active{color:var(--purple)}.tl-status.pending{color:var(--t4)}
@@ -170,6 +170,12 @@ a{text-decoration:none;color:inherit}
 .fi,.fta,.fsel{width:100%;padding:10px 13px;border:2px solid var(--border);border-radius:var(--r-sm);font-size:14px;color:var(--t1);background:var(--white);transition:border-color .2s;outline:none}
 .fi:focus,.fta:focus,.fsel:focus{border-color:var(--purple)}
 .fta{min-height:85px;resize:vertical}
+.fhint{font-size:11px;color:var(--t4);margin-bottom:7px;margin-top:-2px;line-height:1.4}
+.fpill-group{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+.fpill-opt{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:2px solid var(--border);border-radius:99px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:500;color:var(--t2);transition:all .15s;user-select:none;position:relative}
+.fpill-opt:hover{border-color:var(--purple-mid);color:var(--purple);background:var(--purple-light)}
+.fpill-opt.selected{border-color:var(--purple);background:var(--purple-light);color:var(--purple);font-weight:700}
+.fpill-opt input{position:absolute;opacity:0;pointer-events:none}
 .fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .form-nav-bar{display:flex;align-items:center;justify-content:space-between;margin-top:18px}
 .step-dots{display:flex;gap:5px}
@@ -218,7 +224,7 @@ a{text-decoration:none;color:inherit}
 
 /* ── MOBILE TOPBAR ── */
 .mob-bar{display:none;position:fixed;top:0;left:0;right:0;height:54px;background:var(--sidebar);align-items:center;justify-content:space-between;padding:0 16px;z-index:200}
-.mob-bar img{height:22px;filter:brightness(0) invert(1)}
+.mob-bar img{height:22px;width:auto}
 .burger{width:34px;height:34px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
 .burger span{display:block;width:18px;height:2px;background:#fff;border-radius:99px;transition:all .25s}
 .burger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
@@ -275,7 +281,7 @@ a{text-decoration:none;color:inherit}
 <div id="app-screen" style="display:none">
 
   <div class="mob-bar">
-    <img src="logo.png" alt="Nevios">
+    <img src="logo-dark.png" alt="Nevios">
     <button class="burger" id="burger" onclick="toggleSidebar()">
       <span></span><span></span><span></span>
     </button>
@@ -287,7 +293,7 @@ a{text-decoration:none;color:inherit}
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <div class="sb-header">
-        <div class="sb-logo"><img src="logo.png" alt="Nevios"></div>
+        <div class="sb-logo"><img src="logo-dark.png" alt="Nevios"></div>
         <div class="sb-client">
           <div class="sb-client-lbl">Espace client</div>
           <div class="sb-client-name" id="sb-name">—</div>
@@ -349,8 +355,8 @@ a{text-decoration:none;color:inherit}
 
         <div class="g3 gap">
           <div class="stat">
-            <div class="stat-icon" style="background:#EDE9FE">
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="#7C3AED"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            <div class="stat-icon" style="background:#F3E8FF">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="#8C3CDD"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
             </div>
             <div class="stat-val" id="stat-done">0</div>
             <div class="stat-lbl">étapes terminées</div>
@@ -436,77 +442,98 @@ a{text-decoration:none;color:inherit}
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_template" value="table">
 
-            <!-- ÉTAPE 1 : Infos générales -->
+            <!-- ÉTAPE 1 : Coordonnées -->
             <div class="form-step" data-step="1">
               <div class="fsec">
-                <div class="fsec-title"><span class="fsec-num">1</span>Informations générales</div>
+                <div class="fsec-title"><span class="fsec-num">1</span>Vos coordonnées</div>
+                <div class="fw"><label class="fl">Votre nom et prénom <span>*</span></label><input class="fi" type="text" name="nom" required placeholder="Lucas Dupont"></div>
                 <div class="fg2">
-                  <div class="fw"><label class="fl">Nom de l'entreprise <span>*</span></label><input class="fi" type="text" name="entreprise" required placeholder="Ex : CasaNova France"></div>
-                  <div class="fw"><label class="fl">Secteur d'activité <span>*</span></label><input class="fi" type="text" name="secteur" required placeholder="Ex : Immobilier"></div>
+                  <div class="fw"><label class="fl">Votre email <span>*</span></label><input class="fi" type="email" id="field-email-notif" name="email" required placeholder="luca@casanovafrance.com"></div>
+                  <div class="fw"><label class="fl">Téléphone <span>*</span></label><input class="fi" type="tel" name="tel" required placeholder="06 XX XX XX XX"></div>
                 </div>
-                <div class="fg2">
-                  <div class="fw"><label class="fl">Nom du contact principal <span>*</span></label><input class="fi" type="text" name="contact_nom" required placeholder="Prénom Nom"></div>
-                  <div class="fw"><label class="fl">Fonction <span>*</span></label><input class="fi" type="text" name="contact_poste" required placeholder="Ex : Directeur Commercial"></div>
-                </div>
-                <div class="fg2">
-                  <div class="fw"><label class="fl">Email <span>*</span></label><input class="fi" type="email" id="field-email-notif" name="email_contact" required placeholder="email@entreprise.com"></div>
-                  <div class="fw"><label class="fl">Téléphone <span>*</span></label><input class="fi" type="tel" name="telephone" required placeholder="+33 6 00 00 00 00"></div>
-                </div>
-                <div class="fw"><label class="fl">Site web <span>(optionnel)</span></label><input class="fi" type="url" name="site_web" placeholder="https://www.entreprise.com"></div>
               </div>
             </div>
 
-            <!-- ÉTAPE 2 : Contexte & Objectifs -->
+            <!-- ÉTAPE 2 : Clientèle cible -->
             <div class="form-step" data-step="2" style="display:none">
               <div class="fsec">
-                <div class="fsec-title"><span class="fsec-num">2</span>Contexte & Objectifs</div>
-                <div class="fw"><label class="fl">Décrivez votre activité <span>*</span></label><textarea class="fta" name="description_activite" required placeholder="Votre entreprise, votre marché cible..."></textarea></div>
-                <div class="fw"><label class="fl">Vos objectifs avec Nevios <span>*</span></label><textarea class="fta" name="objectifs" required placeholder="Ex : Améliorer notre prospection, automatiser la prise de RDV..."></textarea></div>
-                <div class="fw"><label class="fl">Votre problématique principale <span>*</span></label><textarea class="fta" name="problematique" required placeholder="Ex : Manque de leads qualifiés, temps perdu sur la prospection..."></textarea></div>
-                <div class="fg2">
-                  <div class="fw"><label class="fl">Volume de leads visé <span>(par mois)</span></label><input class="fi" type="text" name="volume_leads" placeholder="Ex : 50 leads/mois"></div>
-                  <div class="fw"><label class="fl">Cible idéale (ICP)</label><input class="fi" type="text" name="icp" placeholder="Ex : PME tech, 50-500 salariés"></div>
+                <div class="fsec-title"><span class="fsec-num">2</span>Votre clientèle cible</div>
+                <div class="fw">
+                  <label class="fl">Types de clients à cibler en priorité <span>*</span></label>
+                  <div class="fhint">Sélectionnez tout ce qui correspond</div>
+                  <div class="fpill-group" data-name="secteurs">
+                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Bureaux & sièges sociaux" onchange="syncFCheck(this)"><span>Bureaux & sièges sociaux</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Promoteurs & agents immobiliers" onchange="syncFCheck(this)"><span>Promoteurs & agents immobiliers</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Hôtels boutique & hospitalité" onchange="syncFCheck(this)"><span>Hôtels boutique & hospitalité</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Résidences haut de gamme" onchange="syncFCheck(this)"><span>Résidences haut de gamme</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Restaurants & bars premium" onchange="syncFCheck(this)"><span>Restaurants & bars premium</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Architectes & décorateurs" onchange="syncFCheck(this)"><span>Architectes & décorateurs</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Cliniques & espaces médicaux" onchange="syncFCheck(this)"><span>Cliniques & espaces médicaux</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Espaces événementiels" onchange="syncFCheck(this)"><span>Espaces événementiels</span></label>
+                  </div>
                 </div>
+                <div class="fw">
+                  <label class="fl">Zone prioritaire <span>*</span></label>
+                  <div class="fpill-group" data-name="zone">
+                    <label class="fpill-opt"><input type="radio" name="zone" value="Paris intra-muros" required onchange="syncFRadio(this)"><span>Paris intra-muros</span></label>
+                    <label class="fpill-opt"><input type="radio" name="zone" value="Paris + petite couronne" onchange="syncFRadio(this)"><span>Paris + petite couronne</span></label>
+                    <label class="fpill-opt"><input type="radio" name="zone" value="Toute l'IDF" onchange="syncFRadio(this)"><span>Toute l'IDF</span></label>
+                  </div>
+                </div>
+                <div class="fw"><label class="fl">Zones à exclure ?</label><div class="fhint">Arrondissements ou villes où vous n'intervenez pas</div><input class="fi" type="text" name="zones_exclure" placeholder="ex : au-delà du périphérique, Seine-Saint-Denis..."></div>
+                <div class="fw"><label class="fl">Budget moyen d'un projet d'aménagement chez un client ?</label><input class="fi" type="text" name="ticket_amenagement" placeholder="ex : 1 500 – 8 000 € selon l'espace"></div>
               </div>
             </div>
 
-            <!-- ÉTAPE 3 : Outils & Technique -->
+            <!-- ÉTAPE 3 : Positionnement -->
             <div class="form-step" data-step="3" style="display:none">
               <div class="fsec">
-                <div class="fsec-title"><span class="fsec-num">3</span>Outils & Environnement technique</div>
+                <div class="fsec-title"><span class="fsec-num">3</span>Votre positionnement</div>
+                <div class="fw"><label class="fl">Votre argument principal face à un concurrent ? <span>*</span></label><div class="fhint">Ce que vous dites quand un prospect demande "pourquoi vous ?"</div><input class="fi" type="text" name="argument" required placeholder="ex : 30 ans d'expérience, interlocuteur unique, plantes garanties 6 mois"></div>
+                <div class="fw"><label class="fl">En 3 mots, votre entreprise c'est…</label><input class="fi" type="text" name="positionnement" placeholder="ex : haut de gamme, sur-mesure, artisanal"></div>
+                <div class="fw"><label class="fl">Un client actuel dont vous êtes fier ?</label><div class="fhint">Un secteur, un type de lieu, pour s'en inspirer dans les emails</div><input class="fi" type="text" name="client_reference" placeholder="ex : cabinet d'avocats dans le 8e, résidence de prestige..."></div>
+                <div class="fw"><label class="fl">Des exemples de messages envoyés à des prospects ?</label><div class="fhint">Même des brouillons — cela aide à coller à votre style</div><textarea class="fta" name="exemples_messages" placeholder="Collez ici un email ou message que vous avez déjà utilisé..."></textarea></div>
+                <div class="fw"><label class="fl">Photos de réalisations à intégrer dans les emails ?</label><div class="fhint">Lien Google Drive, Dropbox… terrasses, murs végétaux, aménagements</div><input class="fi" type="url" name="photos_link" placeholder="https://drive.google.com/..."></div>
                 <div class="fw">
-                  <label class="fl">CRM utilisé</label>
-                  <select class="fsel" name="crm">
-                    <option value="">— Sélectionnez —</option>
-                    <option>HubSpot</option><option>Salesforce</option><option>Pipedrive</option>
-                    <option>Monday CRM</option><option>Notion</option><option>Airtable</option>
-                    <option>Aucun</option><option>Autre</option>
-                  </select>
-                </div>
-                <div class="fw"><label class="fl">Outils de communication interne</label><input class="fi" type="text" name="outils_comms" placeholder="Ex : Slack, Teams, Gmail..."></div>
-                <div class="fw"><label class="fl">Outils de prospection actuels</label><input class="fi" type="text" name="outils_prospect" placeholder="Ex : LinkedIn Sales Nav, Lemlist, Lusha..."></div>
-                <div class="fw"><label class="fl">Contraintes techniques <span>(optionnel)</span></label><textarea class="fta" name="contraintes_tech" style="min-height:65px" placeholder="Sécurité, RGPD, accès restreints, DSI..."></textarea></div>
-                <div class="fw">
-                  <label class="fl">Domaine email dédié pour la prospection ?</label>
-                  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:6px">
-                    <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px"><input type="radio" name="domaine_prospect" value="Oui" style="accent-color:var(--purple)"> Oui</label>
-                    <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px"><input type="radio" name="domaine_prospect" value="Non" style="accent-color:var(--purple)"> Non</label>
-                    <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px"><input type="radio" name="domaine_prospect" value="À créer" style="accent-color:var(--purple)"> À créer avec Nevios</label>
+                  <label class="fl">Qu'est-ce qu'on met en avant dans les emails ? <span>*</span></label>
+                  <div class="fpill-group" data-name="service_priorite">
+                    <label class="fpill-opt"><input type="radio" name="service_priorite" value="Aménagement végétal" required onchange="syncFRadio(this)"><span>🌿 Aménagement végétal</span></label>
+                    <label class="fpill-opt"><input type="radio" name="service_priorite" value="Entretien régulier" onchange="syncFRadio(this)"><span>🔧 Entretien régulier</span></label>
+                    <label class="fpill-opt"><input type="radio" name="service_priorite" value="Les deux selon le prospect" onchange="syncFRadio(this)"><span>Les deux selon le prospect</span></label>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- ÉTAPE 4 : Décideur & Validation -->
+            <!-- ÉTAPE 4 : Configuration + Organisation -->
             <div class="form-step" data-step="4" style="display:none">
               <div class="fsec">
-                <div class="fsec-title"><span class="fsec-num">4</span>Décideur & Validation</div>
-                <div class="fg2">
-                  <div class="fw"><label class="fl">Nom du décideur <span>*</span></label><input class="fi" type="text" name="decideur_nom" required placeholder="Prénom Nom"></div>
-                  <div class="fw"><label class="fl">Rôle <span>*</span></label><input class="fi" type="text" name="decideur_role" required placeholder="Ex : CEO, DG, Associé..."></div>
+                <div class="fsec-title"><span class="fsec-num">4</span>Configuration & organisation</div>
+                <div class="fw"><label class="fl">Email de notification si un prospect répond <span>*</span></label><input class="fi" type="email" name="email_notif" required placeholder="luca@casanovafrance.com"></div>
+                <div class="fw"><label class="fl">D'autres personnes à tenir informées ?</label><input class="fi" type="text" name="autres_contacts" placeholder="ex : alice@casanovafrance.com (assistante)"></div>
+                <div class="fw"><label class="fl">Votre lien de prise de rendez-vous en ligne</label><div class="fhint">Calendly, Cal.com… Laissez vide si vous n'en avez pas, nous en configurerons un</div><input class="fi" type="url" name="calendly" placeholder="https://calendly.com/... (optionnel)"></div>
+                <div class="fw">
+                  <label class="fl">Comment préférez-vous faire vos points hebdo ? <span>*</span></label>
+                  <div class="fpill-group" data-name="canal_suivi">
+                    <label class="fpill-opt"><input type="radio" name="canal_suivi" value="WhatsApp" required onchange="syncFRadio(this)"><span>💬 WhatsApp</span></label>
+                    <label class="fpill-opt"><input type="radio" name="canal_suivi" value="Email" onchange="syncFRadio(this)"><span>📧 Email</span></label>
+                    <label class="fpill-opt"><input type="radio" name="canal_suivi" value="Appel" onchange="syncFRadio(this)"><span>📞 Appel</span></label>
+                    <label class="fpill-opt"><input type="radio" name="canal_suivi" value="Visio" onchange="syncFRadio(this)"><span>🎥 Visio</span></label>
+                  </div>
                 </div>
-                <div class="fw"><label class="fl">Email du décideur</label><input class="fi" type="email" name="decideur_email" placeholder="decideur@entreprise.com"></div>
-                <div class="fw"><label class="fl">Informations complémentaires <span>(optionnel)</span></label><textarea class="fta" name="infos_complementaires" placeholder="Tout ce qui pourrait être utile à notre équipe..."></textarea></div>
+                <div class="fw">
+                  <label class="fl">Votre créneau idéal pour le point hebdo de 30 min</label>
+                  <div class="fpill-group" data-name="dispo">
+                    <label class="fpill-opt"><input type="radio" name="dispo" value="Lun matin" onchange="syncFRadio(this)"><span>Lun matin</span></label>
+                    <label class="fpill-opt"><input type="radio" name="dispo" value="Lun après-midi" onchange="syncFRadio(this)"><span>Lun après-midi</span></label>
+                    <label class="fpill-opt"><input type="radio" name="dispo" value="Mar matin" onchange="syncFRadio(this)"><span>Mar matin</span></label>
+                    <label class="fpill-opt"><input type="radio" name="dispo" value="Mar après-midi" onchange="syncFRadio(this)"><span>Mar après-midi</span></label>
+                    <label class="fpill-opt"><input type="radio" name="dispo" value="Mer matin" onchange="syncFRadio(this)"><span>Mer matin</span></label>
+                    <label class="fpill-opt"><input type="radio" name="dispo" value="Jeu matin" onchange="syncFRadio(this)"><span>Jeu matin</span></label>
+                    <label class="fpill-opt"><input type="radio" name="dispo" value="Ven matin" onchange="syncFRadio(this)"><span>Ven matin</span></label>
+                  </div>
+                </div>
+                <div class="fw"><label class="fl">Quelque chose d'autre à nous dire ?</label><textarea class="fta" name="notes" placeholder="Contraintes particulières, questions, contexte utile..."></textarea></div>
               </div>
               <div class="fsec" style="background:var(--purple-light);border-color:var(--purple-mid)">
                 <div style="display:flex;gap:10px;align-items:flex-start">
@@ -607,8 +634,8 @@ a{text-decoration:none;color:inherit}
    CONFIG NOCODB  ← remplir ici
    ═══════════════════════════════════ */
 const NOCODB = {
-  apiUrl:          'https://app.nocodb.com',
-  apiToken:        'kW7dFpcZ7NeVBd-5QRfMDWxFt3yaOUvJabCURUgY',        // Team & Settings → API Tokens
+  apiUrl:          'https://nocodb.nevios.fr',
+  apiToken:        'WNsg5QoYq_NIvqqJY2Qxqx6Vqf6qHOmCc3DpqChG',        // Team & Settings → API Tokens
   baseId:          'pdldpwibp23cc0p',          // URL de la base NocoDB
   tableId:         'm4zlneoikzw3jbh',         // URL de la table Clients
   tableIdReunions: 'mc8mihmvj2ng8fk',// URL de la table Reunions
@@ -640,8 +667,9 @@ async function handleLogin(e) {
   try {
     const url = `${NOCODB.apiUrl}/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}`
               + `?where=(Identifiant,eq,${encodeURIComponent(slug)})~and(MotDePasse,eq,${encodeURIComponent(pwd)})~and(Actif,eq,true)&limit=1`;
+    console.log('[NocoDB] URL appelée :', url);
     const res  = await fetch(url, {headers:{'xc-token':NOCODB.apiToken}});
-    if (!res.ok) throw new Error('API '+res.status);
+    if (!res.ok) { const txt = await res.text(); throw new Error('API '+res.status+' — '+txt.slice(0,120)); }
     const data = await res.json();
     if (data.list && data.list.length > 0) {
       client = data.list[0];
@@ -653,7 +681,7 @@ async function handleLogin(e) {
       btn.textContent = 'Accéder à mon espace →';
     }
   } catch(er) {
-    showErr('Erreur de connexion. Vérifiez votre accès internet.');
+    showErr('Erreur : ' + er.message);
     btn.disabled = false;
     btn.textContent = 'Accéder à mon espace →';
   }
@@ -681,10 +709,10 @@ function initApp(c) {
   document.getElementById('app-screen').style.display   = 'block';
 
   const name    = c.Nom || c.Identifiant || '—';
-  const contact = c.Prenom || name;
+  const contact = c['Prénom'] || c.Prenom || name;
   const initials = contact.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || '?';
 
-  document.getElementById('sb-name').textContent       = name;
+  document.getElementById('sb-name').textContent       = [c['Prénom']||c.Prenom, c.Nom].filter(Boolean).join(' ') || c.Identifiant || '—';
   document.getElementById('greeting-name').textContent = contact;
   document.getElementById('topbar-avatar').textContent = initials;
 
@@ -728,16 +756,23 @@ async function fetchEtapes(clientId) {
   try {
     const url = `${NOCODB.apiUrl}/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableIdEtapes}`
               + `?where=(ClientId,eq,${encodeURIComponent(clientId)})&sort=Ordre&limit=20`;
+    console.log('[Étapes] URL:', url);
     const res  = await fetch(url, {headers:{'xc-token':NOCODB.apiToken}});
-    if (!res.ok) return [];
+    console.log('[Étapes] Status:', res.status);
+    if (!res.ok) {
+      const txt = await res.text();
+      console.error('[Étapes] Erreur API:', res.status, txt.slice(0,300));
+      return [];
+    }
     const data = await res.json();
+    console.log('[Étapes] Données reçues:', data);
     return (data.list || []).map((e, i) => ({
       icon:   String(i + 1),
-      title:  e.Titre       || 'Étape',
+      title:  e.Title || e.Titre || 'Étape',
       desc:   e.Description || '',
       status: e.Statut      || 'pending',
     }));
-  } catch(e) { return []; }
+  } catch(e) { console.error('[Étapes] Exception:', e); return []; }
 }
 
 /* ═══════════════════════════════════
@@ -753,7 +788,7 @@ async function fetchReunions(clientId) {
     return (data.list || []).map(r => {
       const dt = r.Date ? new Date(r.Date) : null;
       return {
-        title: r.Titre || 'Réunion Nevios',
+        title: r.Title || r.Titre || 'Réunion Nevios',
         date:  r.Date  || null,
         time:  dt ? dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) : '',
         link:  r.Lien  || '',
@@ -768,15 +803,17 @@ async function fetchReunions(clientId) {
    VUE D'ENSEMBLE
    ═══════════════════════════════════ */
 function buildOverview(c, etapes, meetings) {
-  const pct   = parseInt(c.Avancement) || 0;
-  const phase = c.Phase || 'Onboarding en cours';
+  const total = etapes.length;
+  const done  = etapes.filter(s => s.status === 'done').length;
+  const pct   = total ? Math.round((done / total) * 100) : 0;
+  const activeStep = etapes.find(s => s.status === 'active');
+  const phase = activeStep ? activeStep.title : (done === total && total > 0 ? 'Onboarding terminé ✓' : 'Onboarding en cours');
   document.getElementById('ph-bar').style.width    = pct + '%';
   document.getElementById('ph-pct').textContent    = pct + '%';
   document.getElementById('ph-phase').textContent  = phase;
   document.getElementById('ph-pct-label').textContent = pct + '% complété';
 
-  const done = etapes.filter(s => s.status === 'done').length;
-  document.getElementById('stat-done').textContent = etapes.length ? done + ' / ' + etapes.length : '—';
+  document.getElementById('stat-done').textContent = total ? done + ' / ' + total : '—';
 
   if (c.DateDebut) {
     const days = Math.floor((Date.now() - new Date(c.DateDebut)) / 86400000);
@@ -791,7 +828,7 @@ function buildOverview(c, etapes, meetings) {
 
   // Mini steps list
   const el = document.getElementById('overview-steps');
-  if (!etapes.length) { el.innerHTML = '<div style="font-size:13px;color:var(--t4);padding:8px 0">Les étapes se chargent…</div>'; return; }
+  if (!etapes.length) { el.innerHTML = '<div style="font-size:13px;color:var(--t4);padding:8px 0">Aucune étape trouvée. Vérifiez la console (F12) pour le détail.</div>'; return; }
   el.innerHTML = etapes.map((s, i) => {
     const st  = s.status;
     const col = st==='done'?'var(--green)':st==='active'?'var(--purple)':'var(--t4)';
@@ -816,16 +853,14 @@ function buildOverview(c, etapes, meetings) {
    ═══════════════════════════════════ */
 function buildTimeline(etapes) {
   const el = document.getElementById('timeline');
-  if (!etapes.length) { el.innerHTML = '<div style="font-size:13px;color:var(--t4);padding:8px 0">Les étapes se chargent…</div>'; return; }
+  if (!etapes.length) { el.innerHTML = '<div style="font-size:13px;color:var(--t4);padding:8px 0">Aucune étape trouvée. Vérifiez la console (F12) pour le détail.</div>'; return; }
   el.innerHTML = etapes.map((s, i) => {
     const st     = s.status;
-    const isLast = i === etapes.length - 1;
     const lbl    = st==='done'?'Terminé':st==='active'?'En cours':'À venir';
     const badge  = st==='done'?'✓ Complété':st==='active'?'⚡ En cours':'○ À venir';
     return `<div class="tl-item">
       <div class="tl-left">
         <div class="tl-icon ${st}">${st==='done'?'✓':s.icon}</div>
-        ${!isLast?`<div class="tl-line ${st==='done'?'done':''}"></div>`:''}
       </div>
       <div class="tl-body">
         <div class="tl-status ${st}">${lbl}</div>
@@ -952,16 +987,41 @@ function updateFormUI() {
   document.getElementById('btn-next').style.display    = fStep < F_STEPS ? 'inline-flex' : 'none';
   document.getElementById('btn-submit').style.display  = fStep === F_STEPS ? 'inline-flex' : 'none';
 }
+function syncFRadio(input) {
+  document.querySelectorAll(`input[name="${input.name}"]`).forEach(r => {
+    r.closest('.fpill-opt').classList.toggle('selected', r.checked);
+  });
+  const group = input.closest('.fpill-group');
+  if (group) group.style.outline = '';
+}
+function syncFCheck(input) {
+  input.closest('.fpill-opt').classList.toggle('selected', input.checked);
+  const group = input.closest('.fpill-group');
+  if (group) group.style.outline = '';
+}
 function formNext() {
   const cur = document.querySelector(`.form-step[data-step="${fStep}"]`);
   for (const inp of cur.querySelectorAll('[required]')) {
-    if (inp.type === 'checkbox') continue;
+    if (inp.type === 'checkbox' || inp.type === 'radio') continue;
     if (!inp.value.trim()) {
       inp.style.borderColor = 'var(--red)';
       inp.focus();
       inp.addEventListener('input', () => inp.style.borderColor = '', {once:true});
       return;
     }
+  }
+  const radioNames = new Set([...cur.querySelectorAll('input[type=radio][required]')].map(r => r.name));
+  for (const name of radioNames) {
+    if (!cur.querySelector(`input[name="${name}"]:checked`)) {
+      const group = cur.querySelector(`.fpill-group[data-name="${name}"]`);
+      if (group) { group.style.outline = '2px solid var(--red)'; group.style.borderRadius = '8px'; }
+      return;
+    }
+  }
+  if (fStep === 2 && !cur.querySelectorAll('input[name="secteurs"]:checked').length) {
+    const group = cur.querySelector('.fpill-group[data-name="secteurs"]');
+    if (group) { group.style.outline = '2px solid var(--red)'; group.style.borderRadius = '8px'; }
+    return;
   }
   cur.style.display = 'none';
   fStep++;
