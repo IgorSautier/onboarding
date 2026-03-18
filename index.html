@@ -670,7 +670,7 @@ a{text-decoration:none;color:inherit}
                 </div>
                 <div class="fw">
                   <label class="fl">Votre créneau idéal pour le point hebdo de 30 min</label>
-                  <p class="fhint">Sélectionnez le créneau qui vous convient le mieux chaque semaine</p>
+                  <p class="fhint">Cochez tous les créneaux qui vous conviennent</p>
                   <div style="overflow-x:auto;padding-bottom:4px">
                     <table style="border-collapse:collapse;min-width:420px;width:100%;font-size:13px">
                       <thead>
@@ -686,34 +686,34 @@ a{text-decoration:none;color:inherit}
                       <tbody>
                         <tr>
                           <td style="padding:8px 10px;color:var(--t2);font-weight:500">Matin (9h–12h)</td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Lun matin" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Mar matin" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Mer matin" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Jeu matin" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Ven matin" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Lun matin" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mar matin" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mer matin" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Jeu matin" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Ven matin" onchange="syncFCheckTable(this)"></label></td>
                         </tr>
                         <tr style="background:var(--bg)">
                           <td style="padding:8px 10px;color:var(--t2);font-weight:500">Midi (12h–14h)</td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Lun midi" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Mar midi" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Mer midi" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Jeu midi" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Ven midi" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Lun midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mar midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mer midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Jeu midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Ven midi" onchange="syncFCheckTable(this)"></label></td>
                         </tr>
                         <tr>
                           <td style="padding:8px 10px;color:var(--t2);font-weight:500">Après-midi (14h–18h)</td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Lun après-midi" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Mar après-midi" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Mer après-midi" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Jeu après-midi" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="radio" name="dispo" value="Ven après-midi" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Lun après-midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mar après-midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mer après-midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Jeu après-midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Ven après-midi" onchange="syncFCheckTable(this)"></label></td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
                   <div style="margin-top:10px">
                     <label class="fpill-opt" style="display:inline-flex" id="pill-dispo-autres">
-                      <input type="radio" name="dispo" value="Autres" id="radio-dispo-autres" onclick="handleRadioClick(this)" onchange="syncFRadioTable(this);document.getElementById('dispo-autres-wrap').style.display='block'">
+                      <input type="checkbox" name="dispo" value="Autres" id="radio-dispo-autres" onchange="syncFCheckTable(this);document.getElementById('dispo-autres-wrap').style.display=this.checked?'block':'none'">
                       <span>✏️ Autres / pas de préférence</span>
                     </label>
                   </div>
@@ -1451,18 +1451,11 @@ function syncFCheck(input) {
   const group = input.closest('.fpill-group');
   if (group) group.style.outline = '';
 }
-function syncFRadioTable(input) {
-  // Désélectionne toutes les cellules du tableau dispo
-  document.querySelectorAll(`input[name="${input.name}"]`).forEach(r => {
-    const cell = r.closest('.dispo-cell');
-    const pill = r.closest('.fpill-opt');
-    if (cell) cell.classList.toggle('selected', r.checked);
-    if (pill) pill.classList.toggle('selected', r.checked);
-  });
-  // Masque "Autres" si on sélectionne un créneau du tableau
-  if (input.value !== 'Autres') {
-    document.getElementById('dispo-autres-wrap').style.display = 'none';
-  }
+function syncFCheckTable(input) {
+  const cell = input.closest('.dispo-cell');
+  const pill = input.closest('.fpill-opt');
+  if (cell) cell.classList.toggle('selected', input.checked);
+  if (pill) pill.classList.toggle('selected', input.checked);
 }
 function toggleAutres(input) {
   const wrap = document.getElementById('autres-wrap');
