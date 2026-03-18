@@ -776,15 +776,21 @@ let clerkAuth   = window.Clerk; // instance auto-créée par le CDN
 let clerkReady  = clerkAuth.load(); // Lance le chargement immédiatement
 
 const NOCODB = {
-  apiUrl:          'https://nocodb.nevios.fr',
-  apiToken:        atob('elhUci1QRF84dDJXSVdOaE9VYWFpaFdpRVFqMHlnX2IyV0FvZWdZWA=='),
   baseId:          'pdldpwibp23cc0p',
   tableId:         'm4zlneoikzw3jbh',
   tableIdReunions: 'mc8mihmvj2ng8fk',
   tableIdEtapes:   'm3x67kdcu7ftnkm',
 };
-// ⚠️ Pour plus de sécurité, créez un token NocoDB en lecture seule dans
-// Team & Settings → API Tokens et remplacez la valeur ci-dessus.
+
+// Proxy sécurisé via Netlify Function (token NocoDB côté serveur)
+async function nocoFetch(path, query = '', method = 'GET', data = null) {
+  const res = await fetch('/.netlify/functions/nocodb', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path, query, method, data }),
+  });
+  return res;
+}
 
 /* ═══════════════════════════════════
    SÉCURITÉ — helpers
@@ -867,9 +873,10 @@ async function handleLogin(e) {
 }
 
 async function fetchAndInitByEmail(email) {
-  const url = `${NOCODB.apiUrl}/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}`
-            + `?where=(Email,eq,${encodeURIComponent(email)})&limit=1`;
-  const res = await fetch(url, { headers: { 'xc-token': NOCODB.apiToken } });
+  const res = await nocoFetch(
+    `/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}`,
+    `where=(Email,eq,${encodeURIComponent(email)})&limit=1`
+  );
   if (!res.ok) { const t = await res.text(); throw new Error('API '+res.status+' — '+t.slice(0,120)); }
   const data = await res.json();
   if (!data.list || !data.list.length) throw new Error('Aucun compte trouvé pour cet email.');
@@ -1053,10 +1060,10 @@ function applyFormState(c) {
    ═══════════════════════════════════ */
 async function fetchEtapes(clientId) {
   try {
-    const url = `${NOCODB.apiUrl}/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableIdEtapes}`
-              + `?where=(ClientId,eq,${encodeURIComponent(clientId)})&sort=Ordre&limit=20`;
-    console.log('[Étapes] URL:', url);
-    const res  = await fetch(url, {headers:{'xc-token':NOCODB.apiToken}});
+    const res = await nocoFetch(
+      `/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableIdEtapes}`,
+      `where=(ClientId,eq,${encodeURIComponent(clientId)})&sort=Ordre&limit=20`
+    );
     console.log('[Étapes] Status:', res.status);
     if (!res.ok) {
       const txt = await res.text();
@@ -1079,9 +1086,10 @@ async function fetchEtapes(clientId) {
    ═══════════════════════════════════ */
 async function fetchReunions(clientId) {
   try {
-    const url = `${NOCODB.apiUrl}/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableIdReunions}`
-              + `?where=(ClientId,eq,${encodeURIComponent(clientId)})&sort=Date&limit=50`;
-    const res  = await fetch(url, {headers:{'xc-token':NOCODB.apiToken}});
+    const res = await nocoFetch(
+      `/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableIdReunions}`,
+      `where=(ClientId,eq,${encodeURIComponent(clientId)})&sort=Date&limit=50`
+    );
     if (!res.ok) return [];
     const data = await res.json();
     return (data.list || []).map(r => {
@@ -1473,10 +1481,9 @@ async function handleFormSubmit(e) {
     // Succès — cocher Onboarding dans NocoDB
     if (client) {
       const rowId = client.Id || client.id;
-      fetch(`${NOCODB.apiUrl}/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}/${rowId}`, {
-        method: 'PATCH',
-        headers: { 'xc-token': NOCODB.apiToken, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ Onboarding: true }),
+      nocoFetch(
+        `/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}/${rowId}`,
+        '', 'PATCH', { Onboarding: true }
       }).then(r => {
         if (!r.ok) throw new Error('PATCH NocoDB ' + r.status);
         client.Onboarding = true;
@@ -1534,9 +1541,10 @@ function toggleFaq(el) { el.classList.toggle('open'); }
 
   // 5. Re-fetch NocoDB pour données fraîches
   try {
-    const url = `${NOCODB.apiUrl}/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}`
-              + `?where=(Email,eq,${encodeURIComponent(email)})&limit=1`;
-    const res = await fetch(url, { headers: { 'xc-token': NOCODB.apiToken } });
+    const res = await nocoFetch(
+      `/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}`,
+      `where=(Email,eq,${encodeURIComponent(email)})&limit=1`
+    );
     if (!res.ok) return;
     const data = await res.json();
     if (!data.list || !data.list.length) return;
