@@ -243,6 +243,16 @@ a{text-decoration:none;color:inherit}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
 .overlay.on{display:block}
 
+/* ── LOADING SCREEN ── */
+#loading-screen{position:fixed;inset:0;background:linear-gradient(135deg,#0A0718 0%,#18103A 40%,#3D1580 75%,#8C3CDD 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+#loading-screen img{height:52px;width:auto;margin-bottom:28px;opacity:.9}
+.loading-spinner-lg{width:36px;height:36px;border:3px solid rgba(255,255,255,.15);border-top-color:rgba(255,255,255,.8);border-radius:50%;animation:spin .8s linear infinite}
+
+/* ── FORGOT PASSWORD ── */
+.login-link{text-align:center;margin-top:14px;font-size:13px;color:var(--t3)}
+.login-link a{color:var(--purple);font-weight:600;cursor:pointer;text-decoration:none}
+.login-link a:hover{text-decoration:underline}
+
 /* ── PASSWORD TOGGLE ── */
 .lf-pwd{position:relative}
 .lf-pwd input{padding-right:42px}
@@ -329,8 +339,14 @@ a{text-decoration:none;color:inherit}
 </head>
 <body>
 
+<!-- ════════════ LOADING ════════════ -->
+<div id="loading-screen">
+  <img src="logo-dark.png" alt="Nevios">
+  <div class="loading-spinner-lg"></div>
+</div>
+
 <!-- ════════════ LOGIN ════════════ -->
-<div id="login-screen">
+<div id="login-screen" style="display:none">
   <div class="login-page">
     <div class="login-card">
       <div class="login-logo"><img src="logo.png" alt="Nevios"></div>
@@ -352,6 +368,39 @@ a{text-decoration:none;color:inherit}
         </div>
         <button class="login-btn" id="login-btn" type="submit">Accéder à mon espace →</button>
       </form>
+      <div class="login-link"><a onclick="showForgot()">Mot de passe oublié ?</a></div>
+
+      <!-- Étape mot de passe oublié -->
+      <div id="forgot-wrap" style="display:none;margin-top:16px">
+        <p style="font-size:14px;color:var(--t2);margin-bottom:12px">Saisissez votre adresse email pour recevoir un lien de réinitialisation.</p>
+        <div class="lf">
+          <label for="forgot-email">Adresse email</label>
+          <input type="email" id="forgot-email" placeholder="votre@email.com" autocomplete="email">
+        </div>
+        <button class="login-btn" id="forgot-btn" type="button" onclick="handleForgotSend()">Envoyer le code →</button>
+        <div class="login-link" style="margin-top:10px"><a onclick="showLoginForm()">← Retour à la connexion</a></div>
+      </div>
+
+      <!-- Étape saisie code + nouveau mot de passe -->
+      <div id="reset-wrap" style="display:none;margin-top:16px">
+        <p style="font-size:14px;color:var(--t2);margin-bottom:12px">Saisissez le code reçu par email et choisissez un nouveau mot de passe.</p>
+        <div class="lf">
+          <label for="reset-code">Code de vérification</label>
+          <input type="text" id="reset-code" placeholder="123456" maxlength="6" autocomplete="one-time-code" style="letter-spacing:6px;font-size:20px;text-align:center">
+        </div>
+        <div class="lf">
+          <label for="reset-pwd">Nouveau mot de passe</label>
+          <div class="lf-pwd">
+            <input type="password" id="reset-pwd" placeholder="••••••••" minlength="8">
+            <button type="button" class="pwd-toggle" onclick="togglePwd('reset-pwd',this)" title="Afficher/masquer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <button class="login-btn" id="reset-btn" type="button" onclick="handleResetConfirm()">Réinitialiser →</button>
+        <div class="login-link" style="margin-top:10px"><a onclick="showLoginForm()">← Retour à la connexion</a></div>
+      </div>
+
       <!-- Étape vérification email (Client Trust Clerk) -->
       <div id="verify-wrap" style="display:none;margin-top:16px">
         <p style="font-size:14px;color:var(--t2);margin-bottom:12px">Un code de vérification a été envoyé à votre adresse email. Saisissez-le ci-dessous.</p>
@@ -963,6 +1012,79 @@ function showErr(msg) {
   const e = document.getElementById('login-err');
   e.textContent = msg; e.style.display = 'block';
 }
+
+function showLoginForm() {
+  document.getElementById('login-form').style.display   = 'block';
+  document.getElementById('forgot-wrap').style.display  = 'none';
+  document.getElementById('reset-wrap').style.display   = 'none';
+  document.getElementById('verify-wrap').style.display  = 'none';
+  document.getElementById('login-err').style.display    = 'none';
+  document.querySelector('.login-link').style.display   = 'block';
+}
+function showForgot() {
+  document.getElementById('login-form').style.display   = 'none';
+  document.getElementById('forgot-wrap').style.display  = 'block';
+  document.getElementById('reset-wrap').style.display   = 'none';
+  document.getElementById('verify-wrap').style.display  = 'none';
+  document.getElementById('login-err').style.display    = 'none';
+  document.querySelector('.login-link').style.display   = 'none';
+}
+
+async function handleForgotSend() {
+  const email = document.getElementById('forgot-email').value.trim().toLowerCase();
+  const btn   = document.getElementById('forgot-btn');
+  const errEl = document.getElementById('login-err');
+  if (!email) { errEl.textContent = 'Saisissez votre adresse email.'; errEl.style.display = 'block'; return; }
+  errEl.style.display = 'none';
+  btn.disabled = true; btn.innerHTML = '<span class="login-spinner"></span>Envoi…';
+  try {
+    if (clerkReady) await clerkReady;
+    const signIn = await clerkAuth.client.signIn.create({
+      strategy: 'reset_password_email_code',
+      identifier: email,
+    });
+    window._pendingReset = signIn;
+    document.getElementById('forgot-wrap').style.display = 'none';
+    document.getElementById('reset-wrap').style.display  = 'block';
+    btn.disabled = false; btn.textContent = 'Envoyer le code →';
+  } catch(er) {
+    btn.disabled = false; btn.textContent = 'Envoyer le code →';
+    let msg = 'Adresse email introuvable.';
+    if (er.errors && er.errors[0]) msg = er.errors[0].longMessage || er.errors[0].message;
+    errEl.textContent = msg; errEl.style.display = 'block';
+  }
+}
+
+async function handleResetConfirm() {
+  const code = document.getElementById('reset-code').value.trim();
+  const pwd  = document.getElementById('reset-pwd').value;
+  const btn  = document.getElementById('reset-btn');
+  const errEl = document.getElementById('login-err');
+  if (!code || !pwd) { errEl.textContent = 'Veuillez remplir tous les champs.'; errEl.style.display = 'block'; return; }
+  if (pwd.length < 8) { errEl.textContent = 'Le mot de passe doit faire au moins 8 caractères.'; errEl.style.display = 'block'; return; }
+  errEl.style.display = 'none';
+  btn.disabled = true; btn.innerHTML = '<span class="login-spinner"></span>Vérification…';
+  try {
+    const signIn = await window._pendingReset.attemptFirstFactor({
+      strategy: 'reset_password_email_code',
+      code,
+      password: pwd,
+    });
+    if (signIn.status === 'complete') {
+      await clerkAuth.setActive({ session: signIn.createdSessionId });
+      const email = signIn.identifier;
+      await fetchAndInitByEmail(email);
+    } else {
+      throw new Error('Erreur inattendue (statut: ' + signIn.status + ').');
+    }
+  } catch(er) {
+    btn.disabled = false; btn.textContent = 'Réinitialiser →';
+    let msg = 'Code incorrect ou expiré.';
+    if (er.errors && er.errors[0]) msg = er.errors[0].longMessage || er.errors[0].message;
+    else if (er.message) msg = er.message;
+    errEl.textContent = msg; errEl.style.display = 'block';
+  }
+}
 async function handleLogout() {
   try { await clerkAuth.signOut(); } catch(e) {}
   sessionStorage.removeItem('nevios_client');
@@ -985,8 +1107,9 @@ async function handleLogout() {
    INIT APP
    ═══════════════════════════════════ */
 function initApp(c) {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app-screen').style.display   = 'block';
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display   = 'none';
+  document.getElementById('app-screen').style.display     = 'block';
 
   const name    = c.Nom || c.Entreprise || '—';
   // Prénom depuis Clerk en priorité, sinon NocoDB
@@ -1513,8 +1636,12 @@ function toggleFaq(el) { el.classList.toggle('open'); }
   // 1. Attendre que Clerk soit prêt (déjà lancé au niveau global)
   await clerkReady;
 
-  // 2. Si pas de session Clerk active → afficher la page de login (déjà visible par défaut)
-  if (!clerkAuth.user) return;
+  // 2. Si pas de session Clerk active → masquer le loader, afficher le login
+  if (!clerkAuth.user) {
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display   = 'block';
+    return;
+  }
 
   // 3. Session Clerk valide → récupérer l'email de l'utilisateur
   const email = clerkAuth.user.primaryEmailAddress
