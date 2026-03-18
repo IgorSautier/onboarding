@@ -341,7 +341,7 @@ a{text-decoration:none;color:inherit}
 
 <!-- ════════════ LOADING ════════════ -->
 <div id="loading-screen">
-  <img src="logo-dark.png" alt="Nevios">
+  <img src="logo-dark.webp" alt="Nevios">
   <div class="loading-spinner-lg"></div>
 </div>
 
@@ -349,7 +349,7 @@ a{text-decoration:none;color:inherit}
 <div id="login-screen" style="display:none">
   <div class="login-page">
     <div class="login-card">
-      <div class="login-logo"><img src="logo.png" alt="Nevios"></div>
+      <div class="login-logo"><img src="logo.webp" alt="Nevios"></div>
       <h1 class="login-title">Bienvenue dans votre espace</h1>
       <p class="login-sub">Connectez-vous pour accéder à votre onboarding</p>
       <form id="login-form" onsubmit="handleLogin(event)" novalidate>
@@ -419,7 +419,7 @@ a{text-decoration:none;color:inherit}
 <div id="app-screen" style="display:none">
 
   <div class="mob-bar">
-    <img src="logo-dark.png" alt="Nevios">
+    <img src="logo-dark.webp" alt="Nevios">
     <button class="burger" id="burger" onclick="toggleSidebar()">
       <span></span><span></span><span></span>
     </button>
@@ -431,7 +431,7 @@ a{text-decoration:none;color:inherit}
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <div class="sb-header">
-        <div class="sb-logo"><img src="logo-dark.png" alt="Nevios"></div>
+        <div class="sb-logo"><img src="logo-dark.webp" alt="Nevios"></div>
         <div class="sb-client">
           <div class="sb-client-lbl">Espace client</div>
           <div class="sb-client-name" id="sb-name">—</div>
@@ -769,7 +769,7 @@ a{text-decoration:none;color:inherit}
         <div class="card gap">
           <div class="card-title" style="margin-bottom:14px">Votre référent Nevios</div>
           <div class="contact-hero">
-            <div class="c-avatar" id="c-avatar"><img src="contact.png" alt="Igor"></div>
+            <div class="c-avatar" id="c-avatar"><img src="contact.webp" alt="Igor"></div>
             <div>
               <div class="c-name" id="c-name">Équipe Nevios</div>
               <div class="c-role">Chef de projet — Nevios</div>
@@ -819,7 +819,6 @@ a{text-decoration:none;color:inherit}
 /* ═══════════════════════════════════
    CLERK AUTH
    ═══════════════════════════════════ */
-const CLERK_PK  = 'pk_live_Y2xlcmsubmV2aW9zLmZyJA';
 // Clerk initialisé immédiatement (synchrone) — avant toute interaction utilisateur
 let clerkAuth   = window.Clerk; // instance auto-créée par le CDN
 let clerkReady  = clerkAuth.load(); // Lance le chargement immédiatement
@@ -1101,6 +1100,7 @@ async function handleLogout() {
   document.getElementById('login-err').style.display = 'none';
   window._pendingSignIn = null;
   window._pendingEmail  = null;
+  window._pendingReset  = null;
 }
 
 /* ═══════════════════════════════════
@@ -1633,58 +1633,60 @@ function toggleFaq(el) { el.classList.toggle('open'); }
    INIT CLERK + SESSION RECOVERY
    ═══════════════════════════════════ */
 (async function() {
-  // 1. Attendre que Clerk soit prêt (déjà lancé au niveau global)
-  await clerkReady;
-
-  // 2. Si pas de session Clerk active → masquer le loader, afficher le login
-  if (!clerkAuth.user) {
+  function showLogin() {
     document.getElementById('loading-screen').style.display = 'none';
     document.getElementById('login-screen').style.display   = 'block';
-    return;
   }
 
-  // 3. Session Clerk valide → récupérer l'email de l'utilisateur
-  const email = clerkAuth.user.primaryEmailAddress
-    ? clerkAuth.user.primaryEmailAddress.emailAddress
-    : null;
-  if (!email) return;
-
-  // 4. Essayer le cache sessionStorage d'abord (affichage rapide)
-  const s = sessionStorage.getItem('nevios_client');
-  if (s) {
-    try {
-      const cached = JSON.parse(s);
-      // Vérifier que le cache correspond bien à l'utilisateur Clerk connecté
-      if (cached.Email && cached.Email.toLowerCase() === email.toLowerCase()) {
-        client = cached;
-        initApp(client);
-      }
-    } catch(e) { sessionStorage.removeItem('nevios_client'); }
-  }
-
-  // 5. Re-fetch NocoDB pour données fraîches
   try {
+    // 1. Attendre que Clerk soit prêt
+    await clerkReady;
+
+    // 2. Pas de session → login
+    if (!clerkAuth.user) { showLogin(); return; }
+
+    // 3. Récupérer l'email Clerk
+    const email = clerkAuth.user.primaryEmailAddress
+      ? clerkAuth.user.primaryEmailAddress.emailAddress
+      : null;
+    if (!email) { showLogin(); return; }
+
+    // 4. Cache sessionStorage → affichage immédiat
+    const s = sessionStorage.getItem('nevios_client');
+    if (s) {
+      try {
+        const cached = JSON.parse(s);
+        if (cached.Email && cached.Email.toLowerCase() === email.toLowerCase()) {
+          client = cached;
+          initApp(client);
+        }
+      } catch(e) { sessionStorage.removeItem('nevios_client'); }
+    }
+
+    // 5. Re-fetch NocoDB pour données fraîches
     const res = await nocoFetch(
       `/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}`,
       `where=(Email,eq,${encodeURIComponent(email)})&limit=1`
     );
-    if (!res.ok) return;
+    if (!res.ok) {
+      // NocoDB en panne — si cache déjà affiché on laisse, sinon login
+      if (document.getElementById('app-screen').style.display === 'none') showLogin();
+      return;
+    }
     const data = await res.json();
-    if (!data.list || !data.list.length) return;
+    if (!data.list || !data.list.length) { showLogin(); return; }
     const fresh = data.list[0];
 
     client = fresh;
     saveSession(fresh);
 
     if (document.getElementById('app-screen').style.display === 'none') {
-      // Pas encore affiché (pas de cache valide)
       initApp(fresh);
     } else {
-      // Déjà affiché avec cache → mettre à jour les données fraîches
+      // Déjà affiché avec cache → mettre à jour
       const freshPrenom = (clerkAuth && clerkAuth.user && clerkAuth.user.firstName) || fresh['Prénom'] || fresh.Prenom || '';
       document.getElementById('sb-name').textContent = [freshPrenom, fresh.Nom].filter(Boolean).join(' ') || fresh.Entreprise || '—';
       applyFormState(fresh);
-
       const [etapes, reunions] = await Promise.all([
         fetchEtapes(fresh.Entreprise),
         fetchReunions(fresh.Entreprise),
@@ -1695,7 +1697,10 @@ function toggleFaq(el) { el.classList.toggle('open'); }
       buildTimeline(etapes);
       buildMeetings(reunions);
     }
-  } catch(e) { console.warn('[Session refresh]', e); }
+  } catch(e) {
+    // Erreur inattendue (Clerk en panne, réseau, etc.) → fallback login
+    if (document.getElementById('app-screen').style.display === 'none') showLogin();
+  }
 })();
 </script>
 
