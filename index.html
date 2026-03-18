@@ -1308,7 +1308,8 @@ function updateFormUI() {
 }
 function handleRadioClick(input) {
   // Si déjà sélectionné → désélectionner au reclique
-  if (input.closest('.fpill-opt').classList.contains('selected')) {
+  const pill = input.closest('.fpill-opt');
+  if (pill && pill.classList.contains('selected')) {
     input.checked = false;
     syncFRadio(input);
   }
