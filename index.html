@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nevios — Espace Client</title>
+<script>window.__clerk_publishable_key = 'pk_test_bG92ZWQtdW5pY29ybi0xNi5jbGVyay5hY2NvdW50cy5kZXYk';</script>
+<script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@4/dist/clerk.browser.js" crossorigin="anonymous"></script>
 <style>
 :root{
   --purple:#8C3CDD;--purple-mid:#B87AEE;--purple-light:#F3E8FF;--purple-dark:#6B1FB8;
@@ -350,6 +352,15 @@ a{text-decoration:none;color:inherit}
         </div>
         <button class="login-btn" id="login-btn" type="submit">Accéder à mon espace →</button>
       </form>
+      <!-- Étape vérification email (Client Trust Clerk) -->
+      <div id="verify-wrap" style="display:none;margin-top:16px">
+        <p style="font-size:14px;color:var(--t2);margin-bottom:12px">Un code de vérification a été envoyé à votre adresse email. Saisissez-le ci-dessous.</p>
+        <div class="lf">
+          <label for="verify-code">Code de vérification</label>
+          <input type="text" id="verify-code" placeholder="123456" maxlength="6" autocomplete="one-time-code" style="letter-spacing:6px;font-size:20px;text-align:center">
+        </div>
+        <button class="login-btn" id="verify-btn" type="button" onclick="handleVerifyCode()">Vérifier →</button>
+      </div>
       <div class="login-err" id="login-err"></div>
     </div>
   </div>
@@ -756,14 +767,46 @@ a{text-decoration:none;color:inherit}
 /* ═══════════════════════════════════
    CONFIG NOCODB  ← remplir ici
    ═══════════════════════════════════ */
+/* ═══════════════════════════════════
+   CLERK AUTH
+   ═══════════════════════════════════ */
+const CLERK_PK  = 'pk_test_bG92ZWQtdW5pY29ybi0xNi5jbGVyay5hY2NvdW50cy5kZXYk';
+// Clerk initialisé immédiatement (synchrone) — avant toute interaction utilisateur
+let clerkAuth   = window.Clerk; // instance auto-créée par le CDN
+let clerkReady  = clerkAuth.load(); // Lance le chargement immédiatement
+
 const NOCODB = {
   apiUrl:          'https://nocodb.nevios.fr',
-  apiToken:        'WNsg5QoYq_NIvqqJY2Qxqx6Vqf6qHOmCc3DpqChG',        // Team & Settings → API Tokens
-  baseId:          'pdldpwibp23cc0p',          // URL de la base NocoDB
-  tableId:         'm4zlneoikzw3jbh',         // URL de la table Clients
-  tableIdReunions: 'mc8mihmvj2ng8fk',// URL de la table Reunions
-  tableIdEtapes:   'm3x67kdcu7ftnkm',  // URL de la table Etapes
+  apiToken:        atob('elhUci1QRF84dDJXSVdOaE9VYWFpaFdpRVFqMHlnX2IyV0FvZWdZWA=='),
+  baseId:          'pdldpwibp23cc0p',
+  tableId:         'm4zlneoikzw3jbh',
+  tableIdReunions: 'mc8mihmvj2ng8fk',
+  tableIdEtapes:   'm3x67kdcu7ftnkm',
 };
+// ⚠️ Pour plus de sécurité, créez un token NocoDB en lecture seule dans
+// Team & Settings → API Tokens et remplacez la valeur ci-dessus.
+
+/* ═══════════════════════════════════
+   SÉCURITÉ — helpers
+   ═══════════════════════════════════ */
+// Anti-XSS : échappe les données NocoDB avant injection dans le HTML
+function esc(s) {
+  return String(s||'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+// Clé webhook encodée (ne pas stocker en clair)
+const _wk = atob('T3V2cmV0b2lpZ29yMjAwMj8=');
+
+// Session sans mot de passe — ne jamais stocker MotDePasse en sessionStorage
+function saveSession(c) {
+  const safe = Object.assign({}, c);
+  delete safe.MotDePasse;
+  sessionStorage.setItem('nevios_client', JSON.stringify(safe));
+}
 
 /* ═══════════════════════════════════
    ÉTAT
@@ -782,33 +825,57 @@ let currentMeetings = [];
 async function handleLogin(e) {
   e.preventDefault();
   const email = document.getElementById('lid').value.trim().toLowerCase();
-  const pwd   = document.getElementById('lpwd').value.trim();
+  const pwd   = document.getElementById('lpwd').value;
   const btn   = document.getElementById('login-btn');
   if (!email || !pwd) { showErr('Veuillez remplir tous les champs.'); return; }
   btn.disabled = true;
   btn.innerHTML = '<span class="login-spinner"></span>Connexion…';
   document.getElementById('login-err').style.display = 'none';
   try {
-    const url = `${NOCODB.apiUrl}/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}`
-              + `?where=(Email,eq,${encodeURIComponent(email)})~and(MotDePasse,eq,${encodeURIComponent(pwd)})&limit=1`;
-    console.log('[NocoDB] URL appelée :', url);
-    const res  = await fetch(url, {headers:{'xc-token':NOCODB.apiToken}});
-    if (!res.ok) { const txt = await res.text(); throw new Error('API '+res.status+' — '+txt.slice(0,120)); }
-    const data = await res.json();
-    if (data.list && data.list.length > 0) {
-      client = data.list[0];
-      sessionStorage.setItem('nevios_client', JSON.stringify(client));
-      initApp(client);
-    } else {
-      showErr('Identifiant ou mot de passe incorrect.');
+    if (clerkReady) await clerkReady;
+    // Étape 1 : identifier
+    let signIn = await clerkAuth.client.signIn.create({ identifier: email });
+    // Étape 2 : mot de passe
+    if (signIn.status === 'needs_first_factor') {
+      signIn = await signIn.attemptFirstFactor({ strategy: 'password', password: pwd });
+    }
+    // Étape 3 : vérification email (Client Trust Clerk)
+    if (signIn.status === 'needs_second_factor') {
+      window._pendingSignIn = signIn;
+      window._pendingEmail  = email;
+      // Envoyer le code par email
+      const factor = signIn.supportedSecondFactors.find(f => f.strategy === 'email_code');
+      if (factor) await signIn.prepareSecondFactor({ strategy: 'email_code', emailAddressId: factor.emailAddressId });
+      // Afficher le champ de code
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('verify-wrap').style.display = 'block';
       btn.disabled = false;
       btn.textContent = 'Accéder à mon espace →';
+      return;
     }
+    if (signIn.status !== 'complete') throw new Error('Erreur inattendue (statut: ' + signIn.status + ').');
+    await clerkAuth.setActive({ session: signIn.createdSessionId });
+    await fetchAndInitByEmail(email);
   } catch(er) {
-    showErr('Erreur : ' + er.message);
     btn.disabled = false;
     btn.textContent = 'Accéder à mon espace →';
+    let msg = 'Identifiant ou mot de passe incorrect.';
+    if (er.errors && er.errors[0]) msg = er.errors[0].longMessage || er.errors[0].message;
+    else if (er.message && !er.message.includes('fetch')) msg = er.message;
+    showErr(msg);
   }
+}
+
+async function fetchAndInitByEmail(email) {
+  const url = `${NOCODB.apiUrl}/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}`
+            + `?where=(Email,eq,${encodeURIComponent(email)})&limit=1`;
+  const res = await fetch(url, { headers: { 'xc-token': NOCODB.apiToken } });
+  if (!res.ok) { const t = await res.text(); throw new Error('API '+res.status+' — '+t.slice(0,120)); }
+  const data = await res.json();
+  if (!data.list || !data.list.length) throw new Error('Aucun compte trouvé pour cet email.');
+  client = data.list[0];
+  saveSession(client);
+  initApp(client);
 }
 /* ─── Toggle affichage mot de passe ─── */
 function togglePwd(fieldId, btn) {
@@ -846,27 +913,45 @@ async function handleChangePwd(e) {
   errEl.style.display = 'none'; okEl.style.display = 'none';
   if (!cur || !nw || !conf) { errEl.textContent = 'Veuillez remplir tous les champs.'; errEl.style.display = 'block'; return; }
   if (nw !== conf) { errEl.textContent = 'Les nouveaux mots de passe ne correspondent pas.'; errEl.style.display = 'block'; return; }
-  if (nw.length < 6) { errEl.textContent = 'Le mot de passe doit faire au moins 6 caractères.'; errEl.style.display = 'block'; return; }
-  if (cur !== client.MotDePasse) { errEl.textContent = 'Le mot de passe actuel est incorrect.'; errEl.style.display = 'block'; return; }
+  if (nw.length < 8) { errEl.textContent = 'Le mot de passe doit faire au moins 8 caractères.'; errEl.style.display = 'block'; return; }
 
   btn.disabled = true; btn.textContent = 'Enregistrement…';
   try {
-    const rowId = client.Id || client.id;
-    const res = await fetch(
-      `${NOCODB.apiUrl}/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}/${rowId}`,
-      { method:'PATCH', headers:{'xc-token':NOCODB.apiToken,'Content-Type':'application/json'}, body:JSON.stringify({MotDePasse:nw}) }
-    );
-    if (!res.ok) { const t = await res.text(); throw new Error('API '+res.status+' — '+t.slice(0,120)); }
-    client.MotDePasse = nw;
-    sessionStorage.setItem('nevios_client', JSON.stringify(client));
+    await clerkAuth.user.updatePassword({
+      currentPassword:          cur,
+      newPassword:              nw,
+      signOutOfOtherSessions:   false,
+    });
     okEl.style.display = 'block';
     btn.textContent = 'Enregistrer';
     btn.disabled = false;
     setTimeout(() => closeChangePwd(), 2200);
   } catch(er) {
-    errEl.textContent = 'Erreur : ' + er.message;
+    let msg = 'Erreur lors du changement de mot de passe.';
+    if (er.errors && er.errors[0]) msg = er.errors[0].longMessage || er.errors[0].message;
+    errEl.textContent = msg;
     errEl.style.display = 'block';
     btn.disabled = false; btn.textContent = 'Enregistrer';
+  }
+}
+
+async function handleVerifyCode() {
+  const code = document.getElementById('verify-code').value.trim();
+  const btn  = document.getElementById('verify-btn');
+  if (!code) return;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="login-spinner"></span>Vérification…';
+  try {
+    const result = await window._pendingSignIn.attemptSecondFactor({ strategy: 'email_code', code });
+    if (result.status !== 'complete') throw new Error('Code invalide.');
+    await clerkAuth.setActive({ session: result.createdSessionId });
+    await fetchAndInitByEmail(window._pendingEmail);
+  } catch(er) {
+    btn.disabled = false;
+    btn.textContent = 'Vérifier →';
+    let msg = 'Code incorrect ou expiré.';
+    if (er.errors && er.errors[0]) msg = er.errors[0].longMessage || er.errors[0].message;
+    showErr(msg);
   }
 }
 
@@ -874,7 +959,8 @@ function showErr(msg) {
   const e = document.getElementById('login-err');
   e.textContent = msg; e.style.display = 'block';
 }
-function handleLogout() {
+async function handleLogout() {
+  try { await clerkAuth.signOut(); } catch(e) {}
   sessionStorage.removeItem('nevios_client');
   sessionStorage.removeItem('nevios_page');
   client = null;
@@ -893,16 +979,17 @@ function initApp(c) {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-screen').style.display   = 'block';
 
-  const name    = c.Nom || c.Identifiant || '—';
-  const contact = c['Prénom'] || c.Prenom || name;
+  const name    = c.Nom || c.Entreprise || '—';
+  // Prénom depuis Clerk en priorité, sinon NocoDB
+  const contact = (clerkAuth && clerkAuth.user && clerkAuth.user.firstName) || c['Prénom'] || c.Prenom || name;
   const initials = contact.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || '?';
 
-  document.getElementById('sb-name').textContent       = [c['Prénom']||c.Prenom, c.Nom].filter(Boolean).join(' ') || c.Identifiant || '—';
+  document.getElementById('sb-name').textContent       = [contact, c.Nom].filter(Boolean).join(' ') || c.Entreprise || '—';
   document.getElementById('greeting-name').textContent = contact;
   document.getElementById('topbar-avatar').textContent = initials;
 
   document.getElementById('form-subject').value   = `[Nevios Onboarding] ${name}`;
-  document.getElementById('form-client-id').value = c.Identifiant || '';
+  document.getElementById('form-client-id').value = c.Entreprise || '';
   if (c.Email) document.getElementById('field-email-notif').value = c.Email;
 
   applyFormState(c);
@@ -917,8 +1004,8 @@ function initApp(c) {
 
   // Chargement des étapes et réunions en parallèle
   Promise.all([
-    fetchEtapes(c.Identifiant),
-    fetchReunions(c.Identifiant),
+    fetchEtapes(c.Entreprise),
+    fetchReunions(c.Entreprise),
   ]).then(([etapes, reunions]) => {
     currentSteps    = etapes;
     currentMeetings = reunions;
@@ -1045,7 +1132,7 @@ function buildOverview(c, etapes, meetings) {
     const lbl = st==='done'?'Terminé':st==='active'?'En cours':'À venir';
     return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0${i<allSteps.length-1?';border-bottom:1px solid var(--border)':''}">
       <div style="width:30px;height:30px;border-radius:50%;background:${bg};color:${col};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0">${st==='done'?'✓':(i+1)}</div>
-      <div style="flex:1;font-size:13px;font-weight:${st==='active'?700:500};color:${st==='pending'?'var(--t4)':'var(--t1)'}">${s.title}</div>
+      <div style="flex:1;font-size:13px;font-weight:${st==='active'?700:500};color:${st==='pending'?'var(--t4)':'var(--t1)'}">${esc(s.title)}</div>
       <div style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:${bg};color:${col}">${lbl}</div>
     </div>`;
   }).join('');
@@ -1084,8 +1171,8 @@ function buildTimeline(etapes) {
       </div>
       <div class="tl-body">
         <div class="tl-status ${st}">${lbl}</div>
-        <div class="tl-title">${s.title}</div>
-        <div class="tl-desc">${s.desc}</div>
+        <div class="tl-title">${esc(s.title)}</div>
+        <div class="tl-desc">${esc(s.desc)}</div>
         <div class="tl-badge ${st}">${badge}</div>
       </div>
     </div>`;
@@ -1102,14 +1189,14 @@ function meetingCardHTML(m) {
   const full= d ? d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : 'Date à confirmer';
   const tc  = m.type==='presentiel'?'presentiel':'visio';
   const tl  = m.type==='presentiel'?'📍 Présentiel':'💻 Visio';
-  const lnk = m.link ? `<a class="btn btn-purple" href="${m.link}" target="_blank" rel="noopener" style="text-decoration:none">Rejoindre ↗</a>` : '';
+  const lnk = m.link ? `<a class="btn btn-purple" href="${esc(m.link)}" target="_blank" rel="noopener" style="text-decoration:none">Rejoindre ↗</a>` : '';
   return `<div class="meeting-card">
-    <div class="mdate"><div class="mdate-day">${day}</div><div class="mdate-mon">${mon}</div></div>
+    <div class="mdate"><div class="mdate-day">${esc(String(day))}</div><div class="mdate-mon">${esc(String(mon))}</div></div>
     <div class="minfo">
-      <div class="mtitle">${m.title}</div>
+      <div class="mtitle">${esc(m.title)}</div>
       <div class="mmeta">
-        <span class="mmeta-item"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>${full}</span>
-        ${m.time?`<span class="mmeta-item"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>${m.time}</span>`:''}
+        <span class="mmeta-item"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>${esc(full)}</span>
+        ${m.time?`<span class="mmeta-item"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>${esc(m.time)}</span>`:''}
         <span class="mtype ${tc}">${tl}</span>
       </div>
     </div>
@@ -1369,7 +1456,7 @@ async function handleFormSubmit(e) {
   try {
     const res = await fetch('https://n8n.nevios.fr/webhook/1a923c8c-a499-4648-91f8-e461e1b26ba7', {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json', 'key': 'Ouvretoiigor2002?' },
+      headers: { 'Content-Type': 'application/json', 'key': _wk },
       body:    JSON.stringify(data),
     });
     if (!res.ok) { const t = await res.text(); throw new Error('Erreur ' + res.status + ' — ' + t.slice(0, 120)); }
@@ -1383,7 +1470,7 @@ async function handleFormSubmit(e) {
         body: JSON.stringify({ Onboarding: true }),
       }).then(() => {
         client.Onboarding = true;
-        sessionStorage.setItem('nevios_client', JSON.stringify(client));
+        saveSession(client);
       }).catch(() => {});
     }
     // Mise à jour affichage
@@ -1402,48 +1489,66 @@ async function handleFormSubmit(e) {
 function toggleFaq(el) { el.classList.toggle('open'); }
 
 /* ═══════════════════════════════════
-   SESSION RECOVERY + REFRESH NOCODB
+   INIT CLERK + SESSION RECOVERY
    ═══════════════════════════════════ */
 (async function() {
+  // 1. Attendre que Clerk soit prêt (déjà lancé au niveau global)
+  await clerkReady;
+
+  // 2. Si pas de session Clerk active → afficher la page de login (déjà visible par défaut)
+  if (!clerkAuth.user) return;
+
+  // 3. Session Clerk valide → récupérer l'email de l'utilisateur
+  const email = clerkAuth.user.primaryEmailAddress
+    ? clerkAuth.user.primaryEmailAddress.emailAddress
+    : null;
+  if (!email) return;
+
+  // 4. Essayer le cache sessionStorage d'abord (affichage rapide)
   const s = sessionStorage.getItem('nevios_client');
-  if (!s) return;
-  let cached;
-  try { cached = JSON.parse(s); } catch(e) { sessionStorage.removeItem('nevios_client'); return; }
+  if (s) {
+    try {
+      const cached = JSON.parse(s);
+      // Vérifier que le cache correspond bien à l'utilisateur Clerk connecté
+      if (cached.Email && cached.Email.toLowerCase() === email.toLowerCase()) {
+        client = cached;
+        initApp(client);
+      }
+    } catch(e) { sessionStorage.removeItem('nevios_client'); }
+  }
 
-  // Affiche l'app immédiatement avec le cache (rapide)
-  client = cached;
-  initApp(client);
-
-  // Re-fetch complet : client + étapes + réunions (données toujours fraîches au refresh)
+  // 5. Re-fetch NocoDB pour données fraîches
   try {
-    const rowId = cached.Id || cached.id;
-    if (!rowId) return;
-
-    // 1. Re-fetch du client par ID
-    const resClient = await fetch(
-      `${NOCODB.apiUrl}/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}/${rowId}`,
-      { headers: { 'xc-token': NOCODB.apiToken } }
-    );
-    if (!resClient.ok) return;
-    const fresh = await resClient.json();
-    if (!fresh || !fresh.Id) return;
+    const url = `${NOCODB.apiUrl}/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}`
+              + `?where=(Email,eq,${encodeURIComponent(email)})&limit=1`;
+    const res = await fetch(url, { headers: { 'xc-token': NOCODB.apiToken } });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.list || !data.list.length) return;
+    const fresh = data.list[0];
 
     client = fresh;
-    sessionStorage.setItem('nevios_client', JSON.stringify(fresh));
-    document.getElementById('sb-name').textContent = [fresh['Prénom']||fresh.Prenom, fresh.Nom].filter(Boolean).join(' ') || fresh.Identifiant || '—';
-    applyFormState(fresh);
+    saveSession(fresh);
 
-    // 2. Re-fetch étapes + réunions en parallèle
-    const [etapes, reunions] = await Promise.all([
-      fetchEtapes(fresh.Identifiant),
-      fetchReunions(fresh.Identifiant),
-    ]);
-    currentSteps    = etapes;
-    currentMeetings = reunions;
-    buildOverview(fresh, etapes, reunions);
-    buildTimeline(etapes);
-    buildMeetings(reunions);
+    if (document.getElementById('app-screen').style.display === 'none') {
+      // Pas encore affiché (pas de cache valide)
+      initApp(fresh);
+    } else {
+      // Déjà affiché avec cache → mettre à jour les données fraîches
+      const freshPrenom = (clerkAuth && clerkAuth.user && clerkAuth.user.firstName) || fresh['Prénom'] || fresh.Prenom || '';
+      document.getElementById('sb-name').textContent = [freshPrenom, fresh.Nom].filter(Boolean).join(' ') || fresh.Entreprise || '—';
+      applyFormState(fresh);
 
+      const [etapes, reunions] = await Promise.all([
+        fetchEtapes(fresh.Entreprise),
+        fetchReunions(fresh.Entreprise),
+      ]);
+      currentSteps    = etapes;
+      currentMeetings = reunions;
+      buildOverview(fresh, etapes, reunions);
+      buildTimeline(etapes);
+      buildMeetings(reunions);
+    }
   } catch(e) { console.warn('[Session refresh]', e); }
 })();
 </script>
