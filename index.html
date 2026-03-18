@@ -1484,7 +1484,7 @@ async function handleFormSubmit(e) {
       nocoFetch(
         `/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}/${rowId}`,
         '', 'PATCH', { Onboarding: true }
-      }).then(r => {
+      ).then(r => {
         if (!r.ok) throw new Error('PATCH NocoDB ' + r.status);
         client.Onboarding = true;
         saveSession(client);
