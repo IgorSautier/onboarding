@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nevios × CasaNova, Onboarding</title>
+<style>
+:root {
+  --purple:#8B5CF6; --purple-mid:#A78BFA; --purple-light:#EDE9FE; --purple-dark:#6D28D9;
+  --green:#16A34A; --green-light:#DCFCE7;
+  --bg:#F5F5F7; --white:#FFFFFF;
+  --border:#E5E7EB; --border-focus:#C4B5FD;
+  --t1:#111827; --t2:#374151; --t3:#6B7280; --t4:#9CA3AF;
+  --red:#EF4444;
+  --shadow:0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t1);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.6}
+.page-inner{max-width:560px;margin:0 auto}
+/* ── ANIMATIONS ── */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pillPop{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes shimmer{0%{left:-100%}100%{left:100%}}
+@keyframes progressGrow{from{width:0}to{width:var(--target-w)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes successPop{0%{opacity:0;transform:scale(.85)}60%{transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
+/* ── PAGE ── */
+.page{max-width:640px;margin:0 auto;padding:0 16px 80px}
+/* ── HERO ── */
+.hero{
+  padding:32px 0 24px;margin-bottom:28px;
+  animation:fadeIn .5s ease both;
+  text-align:center;
+}
+.hero-logo{margin-bottom:12px}
+/* FIX 1: merged duplicate .hero-pills rules — justify-content:center was being overridden */
+.hero-pills{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.hero h1{font-size:24px;font-weight:900;color:var(--t1);line-height:1.3;margin-bottom:6px}
+.hero .sub{font-size:14px;color:var(--t3);margin-bottom:18px}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--white);border:1.5px solid var(--border);
+  border-radius:99px;padding:5px 13px;font-size:12px;color:var(--t2);font-weight:600;
+  box-shadow:var(--shadow);
+}
+.hero-pill.green{background:var(--green-light);border-color:#86EFAC;color:var(--green)}
+/* ── PROGRESS ── */
+.progress-wrap{margin-bottom:28px;animation:fadeIn .5s .3s ease both}
+.progress-top{display:flex;justify-content:space-between;font-size:12px;color:var(--t3);margin-bottom:6px}
+.progress-track{height:4px;background:var(--border);border-radius:99px;overflow:hidden}
+.progress-fill{height:4px;background:linear-gradient(90deg,var(--purple),#06B6D4);border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1);width:0%}
+/* ── SECTION ── */
+.section{
+  background:var(--white);border:1px solid var(--border);border-radius:16px;
+  padding:28px;margin-bottom:14px;box-shadow:var(--shadow);
+}
+.section:nth-child(1){animation:fadeInUp .5s .15s ease both}
+.section:nth-child(2){animation:fadeInUp .5s .25s ease both}
+.section:nth-child(3){animation:fadeInUp .5s .35s ease both}
+.section:nth-child(4){animation:fadeInUp .5s .45s ease both}
+.section:nth-child(5){animation:fadeInUp .5s .55s ease both}
+.section-title{font-size:11px;font-weight:800;color:var(--purple);letter-spacing:1.5px;
+  text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+/* ── FIELDS ── */
+.field{margin-bottom:20px}
+.field:last-child{margin-bottom:0}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.field-row{grid-template-columns:1fr}}
+.q{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:3px}
+.hint{font-size:12px;color:var(--t4);margin-bottom:8px;margin-top:1px;line-height:1.4}
+.req{color:var(--red);margin-left:1px}
+input[type=text],input[type=email],input[type=tel],input[type=url],textarea{
+  width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;
+  color:var(--t1);font-size:14px;padding:10px 13px;outline:none;font-family:inherit;
+  transition:border-color .15s,box-shadow .15s,background .15s;-webkit-appearance:none}
+input:focus,textarea:focus{
+  border-color:var(--purple);background:var(--white);
+  box-shadow:0 0 0 3px var(--purple-light)}
+input::placeholder,textarea::placeholder{color:var(--t4);font-style:italic}
+textarea{resize:vertical;min-height:76px}
+/* ── PILL OPTIONS ── */
+.pill-group{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.pill-opt{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--bg);border:1.5px solid var(--border);border-radius:99px;
+  padding:7px 14px;cursor:pointer;user-select:none;
+  font-size:13px;font-weight:500;color:var(--t2);
+  transition:all .15s ease;position:relative;overflow:hidden;
+}
+.pill-opt:hover{border-color:var(--purple-mid);color:var(--purple-dark);background:var(--purple-light);transform:translateY(-1px);box-shadow:0 2px 8px rgba(139,92,246,.15)}
+.pill-opt.selected{border-color:var(--purple);background:var(--purple-light);color:var(--purple-dark);font-weight:700;animation:pillPop .2s ease}
+.pill-opt input{position:absolute;opacity:0;pointer-events:none}
+/* ── CHAR COUNT ── */
+.char-count{font-size:11px;color:var(--t4);text-align:right;margin-top:3px;transition:color .2s}
+/* ── SUBMIT ── */
+.submit-area{text-align:center;margin-top:32px;animation:fadeInUp .5s .65s ease both}
+.submit-btn{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--purple),var(--purple-dark));
+  color:#fff;border:none;border-radius:12px;padding:16px 44px;
+  font-size:16px;font-weight:800;cursor:pointer;
+  width:100%;max-width:360px;letter-spacing:.2px;
+  transition:transform .15s,box-shadow .15s;
+  box-shadow:0 4px 14px rgba(109,40,217,.3);
+}
+.submit-btn::after{
+  content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
+  transition:left .6s ease;
+}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(109,40,217,.4)}
+.submit-btn:hover::after{left:160%}
+.submit-btn:active{transform:translateY(0)}
+.submit-btn:disabled{opacity:.7;cursor:not-allowed;transform:none}
+.submit-note{font-size:12px;color:var(--t4);margin-top:10px}
+/* ── SPINNER ── */
+.spinner{
+  display:none;width:20px;height:20px;border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;
+  margin:0 auto;
+}
+/* ── SUCCESS ── */
+.success-screen{
+  display:none;background:var(--white);border:1px solid var(--border);
+  border-radius:16px;padding:40px 28px;text-align:center;
+  animation:successPop .4s ease both;box-shadow:var(--shadow-md);
+}
+.success-icon{font-size:52px;margin-bottom:16px;display:block}
+.success-screen h2{font-size:22px;font-weight:900;color:var(--t1);margin-bottom:8px}
+.success-screen p{color:var(--t3);font-size:14px;margin-bottom:0;line-height:1.6}
+.steps{text-align:left;border-top:1px solid var(--border);padding-top:20px;margin-top:24px}
+.steps-label{font-size:11px;font-weight:800;color:var(--purple);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px}
+.step-item{display:flex;gap:12px;margin-bottom:10px;font-size:13px;color:var(--t2);align-items:flex-start}
+.step-num{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--purple);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:2px}
+/* ── FOOTER ── */
+.footer{text-align:center;margin-top:28px;font-size:11px;color:var(--t4);animation:fadeIn .5s .8s ease both}
+.footer a{color:var(--purple);text-decoration:none}
+/* ── ERROR ── */
+.err-banner{
+  display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;
+  padding:12px 16px;margin-top:12px;font-size:13px;color:#991B1B;text-align:center;
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <!-- ── HERO ── -->
+  <header class="hero">
+    <div class="hero-logo"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAuUAAADsCAYAAADTqtgfAAEAAElEQVR42uy9d7wl1167...iVBORw0KGgoAAAANSUhEUgAAAuUAAADsCAYAAADTqtgfAAEAAElEQVR42uy9d7wl117IIIIbbbbxxxxxxxxFULLBASE64GOESHERE" alt="Nevios" style="height:40px;width:auto;display:block"></div>
+    <!-- FIX 2: removed stray </div> that was here -->
+    <h1>Formulaire d'onboarding</h1>
+    <p class="sub">Quelques questions rapides, ça nous prend 10 minutes et on s'occupe du reste.</p>
+    <div class="hero-pills">
+      <div class="hero-pill">100€ / mois</div>
+      <div class="hero-pill green">✓ Installation offerte</div>
+    </div>
+  </header>
+  <!-- ── PROGRESS ── -->
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span>Avancement</span>
+      <span id="progress-pct">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+  <form id="form" onsubmit="handleSubmit(event)" novalidate>
+    <!-- FORMSUBMIT CONFIG (hidden) -->
+    <input type="hidden" name="_subject" value="[Nevios Onboarding] CasaNova France">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+    <!-- ── 1. COORDONNÉES ── -->
+    <div class="section">
+      <div class="section-title">📋 Vos coordonnées</div>
+      <div class="field">
+        <div class="q">Votre nom et prénom <span class="req">*</span></div>
+        <input type="text" name="nom" placeholder="Lucas Dupont" required oninput="tick()">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <div class="q">Votre email <span class="req">*</span></div>
+          <input type="email" name="email" placeholder="luca@casanovafrance.com" required oninput="tick()">
+        </div>
+        <div class="field">
+          <div class="q">Téléphone <span class="req">*</span></div>
+          <input type="tel" name="tel" placeholder="06 XX XX XX XX" required oninput="tick()">
+        </div>
+      </div>
+    </div>
+    <!-- ── 2. CLIENTÈLE CIBLE ── -->
+    <div class="section">
+      <div class="section-title">🎯 Votre clientèle cible</div>
+      <div class="field">
+        <div class="q">Quels types de clients cibler en priorité ? <span class="req">*</span></div>
+        <div class="hint">Environnements où la végétalisation a le plus de valeur, sélectionnez tout ce qui correspond</div>
+        <div class="pill-group" id="secteurs">
+          <label class="pill-opt"><input type="checkbox" name="secteurs" value="bureaux" onchange="syncCheck(this)"><span>Bureaux & sièges sociaux</span></label>
+          <label class="pill-opt"><input type="checkbox" name="secteurs" value="immo" onchange="syncCheck(this)"><span>Promoteurs & agents immobiliers</span></label>
+          <label class="pill-opt"><input type="checkbox" name="secteurs" value="hotel" onchange="syncCheck(this)"><span>Hôtels boutique & hospitalité</span></label>
+          <label class="pill-opt"><input type="checkbox" name="secteurs" value="residences" onchange="syncCheck(this)"><span>Résidences haut de gamme</span></label>
+          <label class="pill-opt"><input type="checkbox" name="secteurs" value="restau" onchange="syncCheck(this)"><span>Restaurants & bars premium</span></label>
+          <label class="pill-opt"><input type="checkbox" name="secteurs" value="archi" onchange="syncCheck(this)"><span>Architectes & décorateurs d'intérieur</span></label>
+          <label class="pill-opt"><input type="checkbox" name="secteurs" value="medical" onchange="syncCheck(this)"><span>Cliniques & espaces médicaux</span></label>
+          <label class="pill-opt"><input type="checkbox" name="secteurs" value="event" onchange="syncCheck(this)"><span>Espaces événementiels</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="q">Zone prioritaire <span class="req">*</span></div>
+        <div class="pill-group" id="zone">
+          <label class="pill-opt"><input type="radio" name="zone" value="intra" required onchange="syncRadio(this)"><span>Paris intra-muros</span></label>
+          <label class="pill-opt"><input type="radio" name="zone" value="intra_extra" onchange="syncRadio(this)"><span>Paris + petite couronne</span></label>
+          <label class="pill-opt"><input type="radio" name="zone" value="idf" onchange="syncRadio(this)"><span>Toute l'IDF</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="q">Des zones à exclure ?</div>
+        <div class="hint">Arrondissements, villes ou zones où vous n'intervenez pas</div>
+        <input type="text" name="zones_exclure" placeholder="ex: au-delà du périphérique, Seine-Saint-Denis..." oninput="tick()">
+      </div>
+      <div class="field">
+        <div class="q">Budget moyen d'un projet d'aménagement chez un client ?</div>
+        <input type="text" name="ticket_amenagement" placeholder="ex: 1 500 – 8 000 € selon l'espace" oninput="tick()">
+      </div>
+    </div>
+    <!-- ── 3. POSITIONNEMENT ── -->
+    <div class="section">
+      <div class="section-title">🌿 Votre positionnement</div>
+      <div class="field">
+        <div class="q">Votre argument principal face à un concurrent ? <span class="req">*</span></div>
+        <div class="hint">Ce que vous dites quand un prospect demande "pourquoi vous ?"</div>
+        <input type="text" name="argument" required placeholder="ex: 30 ans d'expérience, interlocuteur unique, plantes garanties 6 mois" oninput="tick()">
+      </div>
+      <div class="field">
+        <div class="q">En 3 mots, CasaNova c'est...</div>
+        <input type="text" name="positionnement" placeholder="ex: haut de gamme, sur-mesure, artisanal" oninput="tick()">
+      </div>
+      <div class="field">
+        <div class="q">Un client actuel dont vous êtes fier ?</div>
+        <div class="hint">Un secteur, un type de lieu, pour nous en inspirer dans les emails</div>
+        <input type="text" name="client_reference" placeholder="ex: cabinet d'avocats dans le 8e, résidence de prestige..." oninput="tick()">
+      </div>
+      <div class="field">
+        <div class="q">Avez-vous des exemples de messages envoyés à des prospects ?</div>
+        <div class="hint">Même des brouillons, cela nous aide à coller à votre style</div>
+        <textarea name="exemples_messages" placeholder="Collez ici un email ou message que vous avez déjà utilisé..." oninput="tick();cc(this,'mc',500)"></textarea>
+        <div class="char-count" id="mc">0 / 500</div>
+      </div>
+      <div class="field">
+        <div class="q">Des photos de réalisations à intégrer dans les emails ?</div>
+        <div class="hint">Lien Google Drive, Dropbox ou autre, terrasses, murs végétaux, aménagements...</div>
+        <input type="url" name="photos_link" placeholder="https://drive.google.com/..." oninput="tick()">
+      </div>
+      <div class="field">
+        <div class="q">Qu'est-ce qu'on met en avant dans les emails ? <span class="req">*</span></div>
+        <div class="hint">Le service principal qu'on va proposer aux prospects</div>
+        <div class="pill-group" id="service-priorite">
+          <label class="pill-opt"><input type="radio" name="service_priorite" value="amenagement" required onchange="syncRadio(this)"><span>🌿 Aménagement végétal</span></label>
+          <label class="pill-opt"><input type="radio" name="service_priorite" value="entretien" onchange="syncRadio(this)"><span>🔧 Entretien régulier</span></label>
+          <label class="pill-opt"><input type="radio" name="service_priorite" value="les_deux" onchange="syncRadio(this)"><span>Les deux selon le prospect</span></label>
+        </div>
+      </div>
+    </div>
+    <!-- ── 4. CONFIGURATION ── -->
+    <div class="section">
+      <div class="section-title">⚙️ Configuration technique</div>
+      <div class="field">
+        <div class="q">Email de notification si un prospect répond <span class="req">*</span></div>
+        <input type="email" name="email_notif" required placeholder="luca@casanovafrance.com" oninput="tick()">
+      </div>
+      <div class="field">
+        <div class="q">D'autres personnes à tenir informées ?</div>
+        <input type="text" name="autres_contacts" placeholder="ex: alice@casanovafrance.com (assistante)" oninput="tick()">
+      </div>
+      <div class="field">
+        <div class="q">Votre lien de prise de rendez-vous en ligne</div>
+        <div class="hint">Calendly, Cal.com... Si vous n'en avez pas, nous en configurerons un pour vous, laissez vide</div>
+        <input type="url" name="calendly" placeholder="https://calendly.com/casanova... (optionnel)" oninput="tick()">
+      </div>
+    </div>
+    <!-- ── 5. ORGANISATION ── -->
+    <div class="section">
+      <div class="section-title">📅 Organisation de nos échanges</div>
+      <div class="field">
+        <div class="q">Comment préférez-vous qu'on fasse nos points hebdo ? <span class="req">*</span></div>
+        <div class="pill-group" id="canal-suivi">
+          <label class="pill-opt"><input type="radio" name="canal_suivi" value="whatsapp" required onchange="syncRadio(this)"><span>💬 WhatsApp</span></label>
+          <label class="pill-opt"><input type="radio" name="canal_suivi" value="email" onchange="syncRadio(this)"><span>📧 Email</span></label>
+          <label class="pill-opt"><input type="radio" name="canal_suivi" value="appel" onchange="syncRadio(this)"><span>📞 Appel</span></label>
+          <label class="pill-opt"><input type="radio" name="canal_suivi" value="visio" onchange="syncRadio(this)"><span>🎥 Visio</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="q">Votre créneau idéal pour le point hebdo de 30 min</div>
+        <div class="pill-group" id="dispo">
+          <label class="pill-opt"><input type="radio" name="dispo" value="lun_m" onchange="syncRadio(this)"><span>Lun matin</span></label>
+          <label class="pill-opt"><input type="radio" name="dispo" value="lun_s" onchange="syncRadio(this)"><span>Lun après-midi</span></label>
+          <label class="pill-opt"><input type="radio" name="dispo" value="mar_m" onchange="syncRadio(this)"><span>Mar matin</span></label>
+          <label class="pill-opt"><input type="radio" name="dispo" value="mar_s" onchange="syncRadio(this)"><span>Mar après-midi</span></label>
+          <label class="pill-opt"><input type="radio" name="dispo" value="mer_m" onchange="syncRadio(this)"><span>Mer matin</span></label>
+          <label class="pill-opt"><input type="radio" name="dispo" value="jeu_m" onchange="syncRadio(this)"><span>Jeu matin</span></label>
+          <label class="pill-opt"><input type="radio" name="dispo" value="ven_m" onchange="syncRadio(this)"><span>Ven matin</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="q">Quelque chose d'autre à nous dire ?</div>
+        <textarea name="notes" placeholder="Contraintes particulières, questions, contexte utile..." oninput="tick()"></textarea>
+      </div>
+    </div>
+    <!-- ── SUBMIT ── -->
+    <div class="submit-area">
+      <button type="submit" class="submit-btn" id="submit-btn">
+        <span id="btn-label">Envoyer à Nevios →</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+      <div class="submit-note">Vos réponses nous parviennent directement et en toute confidentialité.</div>
+      <div class="err-banner" id="err-banner">
+        Une erreur est survenue. <strong id="err-fallback-link"></strong>
+      </div>
+    </div>
+  </form>
+  <!-- ── SUCCESS ── -->
+  <div class="success-screen" id="success-screen">
+    <span class="success-icon">🎉</span>
+    <h2>C'est envoyé, merci Lucas !</h2>
+    <p>Nos équipes ont reçu vos informations. Nous revenons vers vous dans les 24h pour confirmer le lancement.</p>
+    <div class="steps">
+      <div class="steps-label">Prochaines étapes</div>
+      <div class="step-item"><div class="step-num">1</div><span>Nous vous confirmons le planning des 8 semaines sous 24h</span></div>
+      <div class="step-item"><div class="step-num">2</div><span>Point de lancement de 30 min selon vos disponibilités</span></div>
+      <div class="step-item"><div class="step-num">3</div><span>Premier draft de votre séquence email livré sous 7 jours</span></div>
+      <div class="step-item"><div class="step-num">4</div><span>Premier prélèvement de 100€/mois au démarrage de la campagne</span></div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Nevios · <a href="mailto:contact@nevios.fr">contact@nevios.fr</a> · <a href="https://nevios.fr">nevios.fr</a></p>
+    <p style="margin-top:4px">Vos données sont confidentielles et ne sont pas partagées avec des tiers.</p>
+  </div>
+</div>
+<script>
+/* ── RADIO SYNC ── */
+function syncRadio(input) {
+  document.querySelectorAll(`[name="${input.name}"]`).forEach(r => {
+    r.closest('.pill-opt').classList.toggle('selected', r.checked);
+  });
+  tick();
+}
+/* ── CHECKBOX SYNC ── */
+function syncCheck(input) {
+  input.closest('.pill-opt').classList.toggle('selected', input.checked);
+  tick();
+}
+/* ── CHAR COUNT ── */
+function cc(el, id, max) {
+  const n = el.value.length;
+  const el2 = document.getElementById(id);
+  el2.textContent = `${n} / ${max}`;
+  el2.style.color = n > max * .9 ? '#F97316' : '';
+}
+/* ── PROGRESS ── */
+function tick() {
+  const form = document.getElementById('form');
+  const reqs = [...form.querySelectorAll('[required]')];
+  const seen = new Set();
+  let filled = 0;
+  reqs.forEach(el => {
+    if (el.type === 'radio') {
+      if (seen.has(el.name)) return;
+      seen.add(el.name);
+      if ([...form.querySelectorAll(`[name="${el.name}"]`)].some(r => r.checked)) filled++;
+    } else {
+      if (el.value.trim()) filled++;
+    }
+  });
+  const total = reqs.filter(e => e.type !== 'radio').length + seen.size;
+  // Bonus for optional but useful fields
+  const bonusFields = ['argument','exemples_messages'];
+  let bonus = 0;
+  bonusFields.forEach(n => {
+    const el = form.querySelector(`[name="${n}"]`);
+    if (el && el.value.trim().length > 15) bonus++;
+  });
+  const pct = Math.min(Math.round(((filled + bonus * .5) / (total + bonusFields.length * .5)) * 100), 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+/* ── BUILD EMAIL BODY (fallback) ── */
+function buildBody(fd) {
+  const f = k => fd.get(k) || ',';
+  const fa = k => fd.getAll(k).join(', ') || ',';
+  return [
+    '=== ONBOARDING NEVIOS × CASANOVA FRANCE ===',
+    `Date : ${new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'})}`,
+    '',
+    '--- COORDONNÉES ---',
+    `Nom : ${f('nom')}`,
+    `Email : ${f('email')}`,
+    `Téléphone : ${f('tel')}`,
+    '',
+    '--- CIBLE ---',
+    `Secteurs : ${fa('secteurs')}`,
+    `Zone : ${f('zone')}`,
+    `Zones exclues : ${f('zones_exclure')}`,
+    /* FIX 3: removed f('decideur') — field "decideur" does not exist in the form */
+    `Ticket aménagement : ${f('ticket_amenagement')}`,
+    '',
+    '--- POSITIONNEMENT ---',
+    `Argument principal : ${f('argument')}`,
+    `Positionnement : ${f('positionnement')}`,
+    `Client de référence : ${f('client_reference')}`,
+    `Exemples de messages : ${f('exemples_messages')}`,
+    `Lien photos : ${f('photos_link')}`,
+    `Service prioritaire : ${f('service_priorite')}`,
+    '',
+    '--- CONFIGURATION ---',
+    `Email notif : ${f('email_notif')}`,
+    `Autres contacts : ${f('autres_contacts')}`,
+    `Calendly : ${f('calendly')}`,
+    '',
+    '--- ORGANISATION ---',
+    `Canal suivi : ${f('canal_suivi')}`,
+    `Créneau hebdo : ${f('dispo')}`,
+    `Notes : ${f('notes')}`,
+    '',
+    '=== FIN ==='
+  ].join('\n');
+}
+/* ── SUBMIT ── */
+async function handleSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const fd = new FormData(form);
+  const btn = document.getElementById('submit-btn');
+  const label = document.getElementById('btn-label');
+  const spinner = document.getElementById('spinner');
+  // Validate required fields
+  const reqs = [...form.querySelectorAll('[required]')];
+  const radiosSeen = new Set();
+  let ok = true;
+  reqs.forEach(el => {
+    if (el.type === 'radio') {
+      if (radiosSeen.has(el.name)) return;
+      radiosSeen.add(el.name);
+      if (![...form.querySelectorAll(`[name="${el.name}"]`)].some(r => r.checked)) ok = false;
+    } else if (!el.value.trim()) ok = false;
+  });
+  // Require at least one sector
+  if (!fd.getAll('secteurs').length) ok = false;
+  if (!ok) {
+    // Highlight missing required fields
+    form.reportValidity();
+    return;
+  }
+  // Loading state
+  btn.disabled = true;
+  label.style.display = 'none';
+  spinner.style.display = 'block';
+  try {
+    const res = await fetch('https://formsubmit.co/ajax/igor.sautier@nevios.fr', {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: fd,
+    });
+    const data = await res.json();
+    if (data.success === 'true' || data.success === true) {
+      showSuccess();
+    } else {
+      throw new Error('formsubmit failed');
+    }
+  } catch {
+    // Fallback: open mailto
+    const subject = encodeURIComponent(`[Nevios Onboarding] CasaNova France, ${fd.get('nom')||'Lucas'}`);
+    const body = encodeURIComponent(buildBody(fd));
+    const mailtoHref = `mailto:igor.sautier@nevios.fr?subject=${subject}&body=${body}`;
+    const a = document.getElementById('err-fallback-link');
+    a.innerHTML = `<a href="${mailtoHref}" style="color:#991B1B;text-decoration:underline">Cliquez ici pour envoyer par email</a>`;
+    document.getElementById('err-banner').style.display = 'block';
+    btn.disabled = false;
+    label.style.display = 'inline';
+    spinner.style.display = 'none';
+  }
+}
+function showSuccess() {
+  document.getElementById('form').style.display = 'none';
+  document.querySelector('.progress-wrap').style.display = 'none';
+  const s = document.getElementById('success-screen');
+  s.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+tick();
+</script>
+</body>
+</html>
