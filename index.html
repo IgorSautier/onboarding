@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nevios — Espace Client</title>
-<script>window.__clerk_publishable_key = 'pk_test_bG92ZWQtdW5pY29ybi0xNi5jbGVyay5hY2NvdW50cy5kZXYk';</script>
+<script>window.__clerk_publishable_key = 'pk_live_Y2xlcmsubmV2aW9zLmZyJA';</script>
 <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@4/dist/clerk.browser.js" crossorigin="anonymous"></script>
 <style>
 :root{
@@ -770,7 +770,7 @@ a{text-decoration:none;color:inherit}
 /* ═══════════════════════════════════
    CLERK AUTH
    ═══════════════════════════════════ */
-const CLERK_PK  = 'pk_test_bG92ZWQtdW5pY29ybi0xNi5jbGVyay5hY2NvdW50cy5kZXYk';
+const CLERK_PK  = 'pk_live_Y2xlcmsubmV2aW9zLmZyJA';
 // Clerk initialisé immédiatement (synchrone) — avant toute interaction utilisateur
 let clerkAuth   = window.Clerk; // instance auto-créée par le CDN
 let clerkReady  = clerkAuth.load(); // Lance le chargement immédiatement
@@ -1012,6 +1012,10 @@ function initApp(c) {
     buildOverview(c, etapes, reunions);
     buildTimeline(etapes);
     buildMeetings(reunions);
+  }).catch(err => {
+    console.error('[initApp] Erreur chargement données:', err);
+    document.getElementById('timeline') && (document.getElementById('timeline').innerHTML =
+      '<p style="color:var(--t4);font-size:13px;padding:12px 0">Impossible de charger les données. Vérifiez votre connexion et rechargez la page.</p>');
   });
 }
 
@@ -1468,10 +1472,16 @@ async function handleFormSubmit(e) {
         method: 'PATCH',
         headers: { 'xc-token': NOCODB.apiToken, 'Content-Type': 'application/json' },
         body: JSON.stringify({ Onboarding: true }),
-      }).then(() => {
+      }).then(r => {
+        if (!r.ok) throw new Error('PATCH NocoDB ' + r.status);
         client.Onboarding = true;
         saveSession(client);
-      }).catch(() => {});
+      }).catch(err => {
+        console.error('[Onboarding] Échec mise à jour NocoDB:', err);
+        // Affiche un avertissement discret sans bloquer l'utilisateur
+        const errEl = document.getElementById('form-err');
+        if (errEl) { errEl.textContent = '⚠️ Formulaire envoyé mais la mise à jour du statut a échoué. Contactez Nevios si le problème persiste.'; errEl.style.display = 'block'; }
+      });
     }
     // Mise à jour affichage
     if (client) { client.Onboarding = true; applyFormState(client); }
