@@ -966,10 +966,15 @@ async function handleLogout() {
   client = null;
   document.getElementById('app-screen').style.display  = 'none';
   document.getElementById('login-screen').style.display = 'block';
+  document.getElementById('login-form').style.display  = 'block';
+  document.getElementById('verify-wrap').style.display = 'none';
   document.getElementById('lpwd').value = '';
+  document.getElementById('lid').value  = '';
   document.getElementById('login-btn').disabled = false;
   document.getElementById('login-btn').textContent = 'Accéder à mon espace →';
   document.getElementById('login-err').style.display = 'none';
+  window._pendingSignIn = null;
+  window._pendingEmail  = null;
 }
 
 /* ═══════════════════════════════════
