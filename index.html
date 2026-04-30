@@ -833,6 +833,62 @@ a{text-decoration:none;color:inherit}
                   <textarea class="fta" name="temoignages" placeholder="Liens vidéos, PDF, citations, captures, études de cas..."></textarea>
                 </div>
               </div>
+              <div class="fsec">
+                <div class="fsec-title"><span class="fsec-num">8</span>🗓️ Créneau idéal pour le point hebdo</div>
+                <div class="fw">
+                  <label class="fl">Votre créneau idéal pour le point hebdo de 30 min</label>
+                  <p class="fhint">Cochez tous les créneaux qui vous conviennent</p>
+                  <div style="overflow-x:auto;padding-bottom:4px">
+                    <table style="border-collapse:collapse;min-width:420px;width:100%;font-size:13px">
+                      <thead>
+                        <tr>
+                          <th style="padding:6px 10px;text-align:left;color:var(--t4);font-weight:600;border-bottom:2px solid var(--border)">Créneau</th>
+                          <th style="padding:6px 10px;text-align:center;color:var(--t4);font-weight:600;border-bottom:2px solid var(--border)">Lun</th>
+                          <th style="padding:6px 10px;text-align:center;color:var(--t4);font-weight:600;border-bottom:2px solid var(--border)">Mar</th>
+                          <th style="padding:6px 10px;text-align:center;color:var(--t4);font-weight:600;border-bottom:2px solid var(--border)">Mer</th>
+                          <th style="padding:6px 10px;text-align:center;color:var(--t4);font-weight:600;border-bottom:2px solid var(--border)">Jeu</th>
+                          <th style="padding:6px 10px;text-align:center;color:var(--t4);font-weight:600;border-bottom:2px solid var(--border)">Ven</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style="padding:8px 10px;color:var(--t2);font-weight:500">Matin (9h-12h)</td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Lun matin" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mar matin" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mer matin" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Jeu matin" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Ven matin" onchange="syncFCheckTable(this)"></label></td>
+                        </tr>
+                        <tr style="background:var(--bg)">
+                          <td style="padding:8px 10px;color:var(--t2);font-weight:500">Midi (12h-14h)</td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Lun midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mar midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mer midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Jeu midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Ven midi" onchange="syncFCheckTable(this)"></label></td>
+                        </tr>
+                        <tr>
+                          <td style="padding:8px 10px;color:var(--t2);font-weight:500">Après-midi (14h-18h)</td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Lun après-midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mar après-midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mer après-midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Jeu après-midi" onchange="syncFCheckTable(this)"></label></td>
+                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Ven après-midi" onchange="syncFCheckTable(this)"></label></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div style="margin-top:10px">
+                    <label class="fpill-opt" style="display:inline-flex" id="pill-dispo-autres">
+                      <input type="checkbox" name="dispo" value="Autres" id="radio-dispo-autres" onchange="syncFCheckTable(this);document.getElementById('dispo-autres-wrap').style.display=this.checked?'block':'none'">
+                      <span>✏️ Autres / pas de préférence</span>
+                    </label>
+                  </div>
+                  <div id="dispo-autres-wrap" style="display:none;margin-top:8px">
+                    <input class="fi" type="text" name="dispo_autres" placeholder="Précisez vos disponibilités…">
+                  </div>
+                </div>
+              </div>
               <div class="fsec" style="background:var(--purple-light);border-color:var(--purple-mid)">
                 <div style="display:flex;gap:10px;align-items:flex-start">
                   <input type="checkbox" id="cgu" required style="margin-top:3px;accent-color:var(--purple);width:15px;height:15px;flex-shrink:0">
@@ -1788,6 +1844,9 @@ async function handleFormSubmit(e) {
     // Section 7 - Preuves & références
     references_clients:    'Q14. Références / cas clients les plus forts',
     temoignages:           'Q15. Témoignages / études de cas réutilisables',
+    // Créneau hebdo
+    dispo:                 'Créneau idéal pour le point hebdo',
+    dispo_autres:          'Créneau idéal (précision)',
   };
 
   // Collecte des valeurs brutes
