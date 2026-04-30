@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nevios — Espace Client</title>
+<title>Nevios - Espace Client</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <script src="https://js-de.sentry-cdn.com/b064f2c94964b1df4faeb001d0b6026d.min.js" crossorigin="anonymous"></script>
-<script>window.__clerk_publishable_key = 'pk_live_Y2xlcmsubmV2aW9zLmZyJA';</script>
+<script>window.__clerk_publishable_key = 'pk_test_bG92ZWQtdW5pY29ybi0xNi5jbGVyay5hY2NvdW50cy5kZXYk';</script>
 <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@4/dist/clerk.browser.js" crossorigin="anonymous"></script>
 <style>
 :root{
@@ -119,25 +119,80 @@ a{text-decoration:none;color:inherit}
 .ph-nums{display:flex;justify-content:space-between;font-size:11px;opacity:.5}
 .ph-pct{font-size:52px;font-weight:900;line-height:1;position:absolute;right:28px;top:22px;opacity:.1}
 
-/* ── TIMELINE ── */
-#timeline{position:relative}
-#timeline::before{content:'';position:absolute;left:19px;top:19px;bottom:19px;width:2px;background:var(--border);z-index:0}
-.tl-item{display:flex;gap:14px;padding-bottom:26px}
-.tl-item:last-child{padding-bottom:0}
-.tl-left{display:flex;flex-direction:column;align-items:center;width:38px;flex-shrink:0}
-.tl-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;border:2px solid var(--border);background:var(--white);position:relative;z-index:1}
-.tl-icon.done{background:var(--green);border-color:var(--green);color:#fff}
-.tl-icon.active{background:var(--purple);border-color:var(--purple);color:#fff;box-shadow:0 0 0 4px var(--purple-light)}
-.tl-icon.pending{background:var(--bg);border-color:var(--border);color:var(--t4)}
-.tl-body{padding-top:6px;flex:1}
-.tl-status{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:2px}
-.tl-status.done{color:var(--green)}.tl-status.active{color:var(--purple)}.tl-status.pending{color:var(--t4)}
-.tl-title{font-size:15px;font-weight:700;color:var(--t1);margin-bottom:3px}
-.tl-desc{font-size:13px;color:var(--t3);line-height:1.6}
-.tl-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600;margin-top:7px}
-.tl-badge.done{background:var(--green-light);color:var(--green)}
-.tl-badge.active{background:var(--purple-light);color:var(--purple-dark)}
-.tl-badge.pending{background:var(--bg);color:var(--t4);border:1px solid var(--border)}
+/* ── ROADMAP ── */
+@keyframes slideStep{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 0 5px rgba(140,60,221,.15)}50%{box-shadow:0 0 0 10px rgba(140,60,221,.06)}}
+
+.rm-header{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:22px 26px;margin-bottom:22px;box-shadow:var(--shadow)}
+.rm-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.rm-header-label{font-size:13px;font-weight:700;color:var(--t2)}
+.rm-header-pct{font-size:32px;font-weight:900;color:var(--purple);line-height:1}
+.rm-bar{height:10px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:14px}
+.rm-bar-fill{height:100%;background:linear-gradient(90deg,var(--purple-dark),var(--purple-mid),#818CF8);border-radius:99px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.rm-chips{display:flex;gap:8px;flex-wrap:wrap}
+.rmc{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:99px;font-size:12px;font-weight:600;border:1.5px solid}
+.rmc.done{background:#F0FDF4;color:#15803D;border-color:#BBF7D0}
+.rmc.active{background:var(--purple-light);color:var(--purple-dark);border-color:var(--purple-mid)}
+.rmc.pending{background:#F9FAFB;color:var(--t3);border-color:var(--border)}
+
+.rm-phase{margin-bottom:24px;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-md)}
+.rm-phase-hd{padding:16px 22px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
+.rm-phase-hd::before{content:'';position:absolute;right:-25px;top:-25px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.045);pointer-events:none}
+.rm-phase-hd.ph-pre{background:linear-gradient(135deg,var(--sidebar) 0%,#2D1B69 100%)}
+.rm-phase-hd.ph-p1{background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple) 100%)}
+.rm-phase-hd.ph-p2{background:linear-gradient(135deg,#166534 0%,#15803D 100%)}
+.rm-phase-badge{font-size:10px;font-weight:700;padding:4px 11px;border-radius:99px;background:rgba(255,255,255,.17);color:rgba(255,255,255,.93);letter-spacing:.6px;text-transform:uppercase;white-space:nowrap;flex-shrink:0;border:1px solid rgba(255,255,255,.2)}
+.rm-phase-info{flex:1;min-width:0}
+.rm-phase-name{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px}
+.rm-phase-wk{font-size:11px;color:rgba(255,255,255,.55)}
+.rm-phase-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.rm-phase-pct{font-size:14px;font-weight:800;color:rgba(255,255,255,.92)}
+.rm-phase-minibar{width:72px;height:5px;background:rgba(255,255,255,.18);border-radius:99px;overflow:hidden}
+.rm-phase-minibar-fill{height:100%;background:rgba(255,255,255,.82);border-radius:99px;transition:width .7s ease}
+
+.rm-steps-wrap{background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);overflow:hidden}
+.rm-step{display:flex;align-items:stretch;border-top:1px solid var(--border);transition:background .15s}
+.rm-step:first-child{border-top:none}
+.rm-step:hover{background:#FAFAFA}
+.rm-step.st-done{background:#F9FFF9}
+.rm-step.st-active{background:#FAF6FF}
+.rm-step.st-pending{background:#fff}
+
+.rm-step-left{width:72px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:20px 4px;gap:8px;position:relative}
+.rm-step-left::after{content:'';position:absolute;left:50%;transform:translateX(-50%);top:72px;bottom:0;width:2px;background:linear-gradient(to bottom,var(--border) 70%,transparent)}
+.rm-step:last-child .rm-step-left::after{display:none}
+.rm-step-wk{font-size:9px;font-weight:700;color:#fff;padding:3px 7px;border-radius:5px;letter-spacing:.4px;white-space:nowrap;line-height:1.5;text-align:center}
+.rm-step.ph-pre .rm-step-wk{background:var(--purple-dark)}
+.rm-step.ph-p1 .rm-step-wk{background:var(--purple)}
+.rm-step.ph-p2 .rm-step-wk{background:#16A34A}
+.rm-step-dot{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1}
+.rm-step-dot.done{background:var(--green);color:#fff;box-shadow:0 0 0 5px var(--green-light)}
+.rm-step-dot.active{background:var(--purple);color:#fff;animation:pulseDot 2.2s ease infinite}
+.rm-step-dot.pending{background:#fff;border:2.5px solid #D1D5DB;color:var(--t4)}
+
+.rm-step-body{flex:1;min-width:0;padding:18px 20px 18px 4px}
+.rm-step-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.rm-step-lbl.done{color:#16A34A}
+.rm-step-lbl.active{color:var(--purple)}
+.rm-step-lbl.pending{color:var(--t4)}
+.rm-step-title{font-size:15px;font-weight:700;color:var(--t1);margin-bottom:7px;line-height:1.35}
+.rm-step-bullets{list-style:none;padding:0;margin:0 0 8px;display:flex;flex-direction:column;gap:3px}
+.rm-step-bullets li{font-size:12.5px;color:var(--t3);display:flex;align-items:flex-start;gap:8px;line-height:1.55;padding:1px 0}
+.rm-step-bullets li::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--purple-mid);margin-top:7px;flex-shrink:0}
+.rm-step-obj{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 12px;border-radius:8px;margin-top:5px}
+.rm-step.ph-pre .rm-step-obj{background:var(--purple-light);color:var(--purple-dark);border:1px solid var(--purple-mid)}
+.rm-step.ph-p1 .rm-step-obj{background:var(--purple-light);color:var(--purple-dark);border:1px solid var(--purple-mid)}
+.rm-step.ph-p2 .rm-step-obj{background:var(--green-light);color:#15803D;border:1px solid #86EFAC}
+
+@media(max-width:520px){
+  .rm-step-left{width:56px;padding:16px 2px}
+  .rm-step-dot{width:32px;height:32px}
+  .rm-step-wk{font-size:8px;padding:2px 5px}
+  .rm-step-body{padding:14px 14px 14px 2px}
+  .rm-step-title{font-size:14px}
+  .rm-step-bullets li{font-size:12px}
+  .rm-phase-minibar{display:none}
+}
 
 /* ── MEETING CARDS ── */
 .meeting-card{display:flex;gap:14px;align-items:flex-start;padding:18px;background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:10px;transition:box-shadow .2s}
@@ -436,7 +491,7 @@ a{text-decoration:none;color:inherit}
         <div class="sb-logo"><img src="logo-dark.webp" alt="Nevios"></div>
         <div class="sb-client">
           <div class="sb-client-lbl">Espace client</div>
-          <div class="sb-client-name" id="sb-name">—</div>
+          <div class="sb-client-name" id="sb-name">-</div>
         </div>
       </div>
       <nav class="sb-nav">
@@ -483,16 +538,16 @@ a{text-decoration:none;color:inherit}
       <div id="page-overview" class="page active">
         <div class="topbar">
           <div>
-            <div class="topbar-title">Bonjour, <span id="greeting-name">—</span> 👋</div>
+            <div class="topbar-title">Bonjour, <span id="greeting-name">-</span> 👋</div>
             <div class="topbar-sub">Voici l'état d'avancement de votre projet Nevios</div>
           </div>
-          <div class="avatar" id="topbar-avatar">—</div>
+          <div class="avatar" id="topbar-avatar">-</div>
         </div>
 
         <div class="progress-hero gap">
           <div class="ph-pct" id="ph-pct">0%</div>
           <div class="ph-label">Avancement global du projet</div>
-          <div class="ph-phase" id="ph-phase">—</div>
+          <div class="ph-phase" id="ph-phase">-</div>
           <div class="ph-bar-outer"><div class="ph-bar-inner" id="ph-bar" style="width:0%"></div></div>
           <div class="ph-nums"><span>Démarrage</span><span id="ph-pct-label">0% complété</span><span>Finalisation</span></div>
         </div>
@@ -509,14 +564,14 @@ a{text-decoration:none;color:inherit}
             <div class="stat-icon" style="background:#DBEAFE">
               <svg width="18" height="18" viewBox="0 0 20 20" fill="#2563EB"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
             </div>
-            <div class="stat-val" id="stat-meeting">—</div>
+            <div class="stat-val" id="stat-meeting">-</div>
             <div class="stat-lbl">prochaine réunion</div>
           </div>
           <div class="stat">
             <div class="stat-icon" style="background:#DCFCE7">
               <svg width="18" height="18" viewBox="0 0 20 20" fill="#16A34A"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
             </div>
-            <div class="stat-val" id="stat-days">—</div>
+            <div class="stat-val" id="stat-days">-</div>
             <div class="stat-lbl">jours depuis le début</div>
           </div>
         </div>
@@ -542,11 +597,11 @@ a{text-decoration:none;color:inherit}
       <div id="page-steps" class="page">
         <div class="topbar">
           <div>
-            <div class="topbar-title">Mes étapes</div>
-            <div class="topbar-sub">Suivez votre parcours d'onboarding étape par étape</div>
+            <div class="topbar-title">Roadmap du projet</div>
+            <div class="topbar-sub">Suivez l'avancement de votre projet phase par phase</div>
           </div>
         </div>
-        <div class="card"><div id="timeline"></div></div>
+        <div id="roadmap-container"></div>
       </div>
 
       <!-- ─── MON FORMULAIRE ─── -->
@@ -571,7 +626,7 @@ a{text-decoration:none;color:inherit}
         <div id="form-wrap">
           <div class="card gap" style="padding:16px 22px">
             <div class="fprogress-labels">
-              <span id="fstep-lbl">Étape 1 / 4</span>
+              <span id="fstep-lbl">Étape 1 / 7</span>
               <span id="fstep-pct">0%</span>
             </div>
             <div class="fprogress-track"><div class="fprogress-fill" id="fprog-fill" style="width:0%"></div></div>
@@ -584,144 +639,199 @@ a{text-decoration:none;color:inherit}
             <input type="hidden" id="form-subject" value="">
             <input type="hidden" id="form-client-id" value="">
 
-            <!-- ÉTAPE 1 : Coordonnées -->
+            <!-- ÉTAPE 1 - Section 1 : Problématique ciblée -->
             <div class="form-step" data-step="1">
               <div class="fsec">
-                <div class="fsec-title"><span class="fsec-num">1</span>Vos coordonnées</div>
-                <div class="fw"><label class="fl">Votre nom et prénom <span>*</span></label><input class="fi" type="text" name="nom" required placeholder="Lucas Dupont"></div>
-                <div class="fg2">
-                  <div class="fw"><label class="fl">Votre email <span>*</span></label><input class="fi" type="email" id="field-email-notif" name="email" required placeholder="jean@monentreprise.fr"></div>
-                  <div class="fw"><label class="fl">Téléphone <span>*</span></label><input class="fi" type="tel" name="tel" required placeholder="06 XX XX XX XX"></div>
+                <div class="fsec-title"><span class="fsec-num">1</span>🎯 Problématique ciblée</div>
+                <div class="fw">
+                  <label class="fl">Q1. Quelle est la problématique unique et douloureuse que rencontrent vos clients cibles ? <span>*</span></label>
+                  <div class="fhint">Exemple : trop de temps perdu à recruter, manque de visibilité digitale, difficultés à générer des rendez-vous qualifiés…</div>
+                  <textarea class="fta" name="probleme" required placeholder="Décrivez la douleur principale de vos clients cibles..."></textarea>
                 </div>
-                <div class="fw"><label class="fl">Site web de votre entreprise <span>Facultatif</span></label><input class="fi" type="url" name="website" placeholder="https://www.monentreprise.fr"></div>
+                <div class="fw">
+                  <label class="fl">Q2. Pourquoi cette problématique est-elle urgente et prioritaire pour eux aujourd'hui ? <span>*</span></label>
+                  <textarea class="fta" name="urgence" required placeholder="Pression réglementaire, concurrence, opportunité de marché, conséquences si pas réglé..."></textarea>
+                </div>
               </div>
             </div>
 
-            <!-- ÉTAPE 2 : Clientèle cible -->
+            <!-- ÉTAPE 2 - Section 2 : Solution & valeur -->
             <div class="form-step" data-step="2" style="display:none">
               <div class="fsec">
-                <div class="fsec-title"><span class="fsec-num">2</span>Votre clientèle cible</div>
+                <div class="fsec-title"><span class="fsec-num">2</span>💡 Solution & valeur</div>
                 <div class="fw">
-                  <label class="fl">Types de clients à cibler en priorité <span>*</span></label>
-                  <div class="fhint">Sélectionnez tout ce qui correspond</div>
-                  <div class="fpill-group" data-name="secteurs">
-                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Bureaux & sièges sociaux" onchange="syncFCheck(this)"><span>Bureaux & sièges sociaux</span></label>
-                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Promoteurs & agents immobiliers" onchange="syncFCheck(this)"><span>Promoteurs & agents immobiliers</span></label>
-                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Hôtels boutique & hospitalité" onchange="syncFCheck(this)"><span>Hôtels boutique & hospitalité</span></label>
-                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Résidences haut de gamme" onchange="syncFCheck(this)"><span>Résidences haut de gamme</span></label>
-                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Restaurants & bars premium" onchange="syncFCheck(this)"><span>Restaurants & bars premium</span></label>
-                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Architectes & décorateurs" onchange="syncFCheck(this)"><span>Architectes & décorateurs</span></label>
-                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Cliniques & espaces médicaux" onchange="syncFCheck(this)"><span>Cliniques & espaces médicaux</span></label>
-                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Espaces événementiels" onchange="syncFCheck(this)"><span>Espaces événementiels</span></label>
-                    <label class="fpill-opt"><input type="checkbox" name="secteurs" value="Autres" id="chk-autres" onchange="syncFCheck(this);toggleAutres(this)"><span>✏️ Autres</span></label>
-                  </div>
-                  <div id="autres-wrap" style="display:none;margin-top:10px">
-                    <input class="fi" type="text" id="autres-text" name="secteurs_autres" placeholder="Précisez le type de client…">
-                  </div>
+                  <label class="fl">Q3. Comment décrivez-vous aujourd'hui votre solution pour y répondre ? <span>*</span></label>
+                  <div class="fhint">Format : « J'aide (client) à (problématique) avec (solution) en (garantie). » - une phrase simple et claire, sans jargon</div>
+                  <textarea class="fta" name="solution" required placeholder="J'aide les... à... avec... en..."></textarea>
                 </div>
                 <div class="fw">
-                  <label class="fl">Zone prioritaire <span>*</span></label>
-                  <div class="fpill-group" data-name="zone">
-                    <label class="fpill-opt"><input type="radio" name="zone" value="Paris intra-muros" required onclick="handleRadioClick(this)" onchange="syncFRadio(this)"><span>Paris intra-muros</span></label>
-                    <label class="fpill-opt"><input type="radio" name="zone" value="Paris + petite couronne" onclick="handleRadioClick(this)" onchange="syncFRadio(this)"><span>Paris + petite couronne</span></label>
-                    <label class="fpill-opt"><input type="radio" name="zone" value="Toute l'IDF" onclick="handleRadioClick(this)" onchange="syncFRadio(this)"><span>Toute l'IDF</span></label>
-                  </div>
+                  <label class="fl">Q4. Quelles sont les valeurs ajoutées immédiates de votre solution ? <span>*</span></label>
+                  <div class="fhint">Gain de temps, croissance, sécurité, économies, etc.</div>
+                  <textarea class="fta" name="valeurs_ajoutees" required placeholder="Listez les bénéfices clés perçus dès les premiers jours..."></textarea>
                 </div>
-                <div class="fw"><label class="fl">Zones à exclure ?</label><div class="fhint">Arrondissements ou villes où vous n'intervenez pas</div><input class="fi" type="text" name="zones_exclure" placeholder="ex : au-delà du périphérique, Seine-Saint-Denis..."></div>
-                <div class="fw"><label class="fl">Budget moyen d'un projet d'aménagement chez un client ?</label><input class="fi" type="text" name="ticket_amenagement" placeholder="ex : 1 500 – 8 000 € selon l'espace"></div>
+                <div class="fw">
+                  <label class="fl">Q5. Quelle est la rapidité de vos résultats ? <span>*</span></label>
+                  <div class="fhint">En combien de temps votre client voit un bénéfice mesurable ?</div>
+                  <input class="fi" type="text" name="rapidite_resultats" required placeholder="ex : 30 jours, 3 mois, dès la 1re semaine...">
+                </div>
               </div>
             </div>
 
-            <!-- ÉTAPE 3 : Positionnement -->
+            <!-- ÉTAPE 3 - Section 3 : Différenciation & rémunération -->
             <div class="form-step" data-step="3" style="display:none">
               <div class="fsec">
-                <div class="fsec-title"><span class="fsec-num">3</span>Votre positionnement</div>
-                <div class="fw"><label class="fl">Votre argument principal face à un concurrent ? <span>*</span></label><div class="fhint">Ce que vous dites quand un prospect demande "pourquoi vous ?"</div><input class="fi" type="text" name="argument" required placeholder="ex : 30 ans d'expérience, interlocuteur unique, plantes garanties 6 mois"></div>
-                <div class="fw"><label class="fl">En 3 mots, votre entreprise c'est…</label><input class="fi" type="text" name="positionnement" placeholder="ex : haut de gamme, sur-mesure, artisanal"></div>
-                <div class="fw"><label class="fl">Un client actuel dont vous êtes fier ?</label><div class="fhint">Un secteur, un type de lieu, pour s'en inspirer dans les emails</div><input class="fi" type="text" name="client_reference" placeholder="ex : cabinet d'avocats dans le 8e, résidence de prestige..."></div>
-                <div class="fw"><label class="fl">Des exemples de messages envoyés à des prospects ?</label><div class="fhint">Même des brouillons — cela aide à coller à votre style</div><textarea class="fta" name="exemples_messages" placeholder="Collez ici un email ou message que vous avez déjà utilisé..."></textarea></div>
-                <div class="fw"><label class="fl">Photos de réalisations à intégrer dans les emails ?</label><div class="fhint">Lien Google Drive, Dropbox… terrasses, murs végétaux, aménagements</div><input class="fi" type="url" name="photos_link" placeholder="https://drive.google.com/..."></div>
+                <div class="fsec-title"><span class="fsec-num">3</span>🥊 Différenciation & rémunération</div>
                 <div class="fw">
-                  <label class="fl">Qu'est-ce qu'on met en avant dans les emails ? <span>*</span></label>
-                  <div class="fpill-group" data-name="service_priorite">
-                    <label class="fpill-opt"><input type="radio" name="service_priorite" value="Aménagement végétal" required onclick="handleRadioClick(this)" onchange="syncFRadio(this)"><span>🌿 Aménagement végétal</span></label>
-                    <label class="fpill-opt"><input type="radio" name="service_priorite" value="Entretien régulier" onclick="handleRadioClick(this)" onchange="syncFRadio(this)"><span>🔧 Entretien régulier</span></label>
-                    <label class="fpill-opt"><input type="radio" name="service_priorite" value="Les deux selon le prospect" onclick="handleRadioClick(this)" onchange="syncFRadio(this)"><span>Les deux selon le prospect</span></label>
-                  </div>
+                  <label class="fl">Q6. En quoi votre offre est-elle différente des concurrents (océan rouge) ? <span>*</span></label>
+                  <div class="fhint">Éléments visibles avant même de travailler avec vous : garantie, modèle unique, exclusivité, etc.</div>
+                  <textarea class="fta" name="differenciation" required placeholder="Votre proposition unique de valeur, ce qui vous rend irremplaçable..."></textarea>
+                </div>
+                <div class="fw">
+                  <label class="fl">Q7. Quel modèle de rémunération innovant (ou garantie) seriez-vous prêt à proposer ? <span>*</span></label>
+                  <textarea class="fta" name="modele_remuneration" required placeholder="ex : performance-based, satisfait ou remboursé, paiement échelonné, success fee..."></textarea>
                 </div>
               </div>
             </div>
 
-            <!-- ÉTAPE 4 : Configuration + Organisation -->
+            <!-- ÉTAPE 4 - Section 4 : Validation marché -->
             <div class="form-step" data-step="4" style="display:none">
               <div class="fsec">
-                <div class="fsec-title"><span class="fsec-num">4</span>Configuration & organisation</div>
-                <div class="fw"><label class="fl">Email de notification si un prospect répond <span>*</span></label><input class="fi" type="email" name="email_notif" required placeholder="jean@monentreprise.fr"></div>
-                <div class="fw"><label class="fl">D'autres personnes à tenir informées ?</label><input class="fi" type="text" name="autres_contacts" placeholder="ex : marie@monentreprise.fr (assistante)"></div>
-                <div class="fw"><label class="fl">Votre lien de prise de rendez-vous en ligne</label><div class="fhint">Calendly, Cal.com… Laissez vide si vous n'en avez pas, nous en configurerons un</div><input class="fi" type="url" name="calendly" placeholder="https://calendly.com/... (optionnel)"></div>
+                <div class="fsec-title"><span class="fsec-num">4</span>✅ Validation marché</div>
                 <div class="fw">
-                  <label class="fl">Comment préférez-vous faire vos points hebdo ? <span>*</span></label>
-                  <div class="fpill-group" data-name="canal_suivi">
-                    <label class="fpill-opt"><input type="radio" name="canal_suivi" value="WhatsApp" required onclick="handleRadioClick(this)" onchange="syncFRadio(this)"><span>💬 WhatsApp</span></label>
-                    <label class="fpill-opt"><input type="radio" name="canal_suivi" value="Email" onclick="handleRadioClick(this)" onchange="syncFRadio(this)"><span>📧 Email</span></label>
-                    <label class="fpill-opt"><input type="radio" name="canal_suivi" value="Appel" onclick="handleRadioClick(this)" onchange="syncFRadio(this)"><span>📞 Appel</span></label>
-                    <label class="fpill-opt"><input type="radio" name="canal_suivi" value="Visio" onclick="handleRadioClick(this)" onchange="syncFRadio(this)"><span>🎥 Visio</span></label>
+                  <label class="fl">Q8. Avez-vous déjà validé votre offre directement auprès de clients ou de prospects ? <span>*</span></label>
+                  <div class="fpill-group" data-name="offre_validee">
+                    <label class="fpill-opt"><input type="radio" name="offre_validee" value="OUI" required onclick="handleRadioClick(this);toggleValidationDetails()" onchange="syncFRadio(this);toggleValidationDetails()"><span>✓ A - OUI</span></label>
+                    <label class="fpill-opt"><input type="radio" name="offre_validee" value="NON" onclick="handleRadioClick(this);toggleValidationDetails()" onchange="syncFRadio(this);toggleValidationDetails()"><span>✗ B - NON</span></label>
+                  </div>
+                </div>
+                <div class="fw" id="validation-details-wrap" style="display:none">
+                  <label class="fl" id="validation-details-label">Précisez</label>
+                  <textarea class="fta" name="offre_validee_details" id="offre-validee-details" placeholder=""></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- ÉTAPE 5 - Section 5 : Stratégies d'acquisition -->
+            <div class="form-step" data-step="5" style="display:none">
+              <div class="fsec">
+                <div class="fsec-title"><span class="fsec-num">5</span>📢 Stratégies d'acquisition</div>
+                <div class="fw">
+                  <label class="fl">Q9. Parmi ces stratégies, lesquelles vous semblent adaptées ? <span>*</span></label>
+                  <div class="fhint">Plusieurs choix possibles</div>
+                  <div class="fpill-group" data-name="strategies" data-required-multi="1">
+                    <label class="fpill-opt"><input type="checkbox" name="strategies" value="A. Approche directe sur problématique" onchange="syncFCheck(this)"><span>A. Approche directe sur problématique</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="strategies" value="B. Partage de contenu premium (YouTube, podcast, analyse, article expert)" onchange="syncFCheck(this)"><span>B. Contenu premium (YouTube, podcast, article)</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="strategies" value="C. Ressource privative (Notion, mini-formation, outil concret)" onchange="syncFCheck(this)"><span>C. Ressource privative (Notion, mini-formation)</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="strategies" value="D. Communauté fermée (Slack, WhatsApp, Discord, cercle LinkedIn)" onchange="syncFCheck(this)"><span>D. Communauté fermée (Slack, Discord…)</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="strategies" value="E. Partenariat stratégique (co-branding, co-distribution, synergies)" onchange="syncFCheck(this)"><span>E. Partenariat stratégique</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="strategies" value="F. Mise en avant médiatique (newsletter, interview, classement, témoignage)" onchange="syncFCheck(this)"><span>F. Mise en avant médiatique</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="strategies" value="G. Webinar ultra-ciblé" onchange="syncFCheck(this)"><span>G. Webinar ultra-ciblé</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="strategies" value="H. Newsletter payante → accès gratuit" onchange="syncFCheck(this)"><span>H. Newsletter payante → accès gratuit</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="strategies" value="I. Service premium offert (mini-livraison, sourcing limité, analyse sectorielle)" onchange="syncFCheck(this)"><span>I. Service premium offert</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="strategies" value="J. Mise en valeur sans contrepartie (classement, visibilité, equity)" onchange="syncFCheck(this)"><span>J. Mise en valeur sans contrepartie</span></label>
                   </div>
                 </div>
                 <div class="fw">
-                  <label class="fl">Votre créneau idéal pour le point hebdo de 30 min</label>
-                  <p class="fhint">Cochez tous les créneaux qui vous conviennent</p>
-                  <div style="overflow-x:auto;padding-bottom:4px">
-                    <table style="border-collapse:collapse;min-width:420px;width:100%;font-size:13px">
-                      <thead>
-                        <tr>
-                          <th style="padding:6px 10px;text-align:left;color:var(--t4);font-weight:600;border-bottom:2px solid var(--border)">Créneau</th>
-                          <th style="padding:6px 10px;text-align:center;color:var(--t4);font-weight:600;border-bottom:2px solid var(--border)">Lun</th>
-                          <th style="padding:6px 10px;text-align:center;color:var(--t4);font-weight:600;border-bottom:2px solid var(--border)">Mar</th>
-                          <th style="padding:6px 10px;text-align:center;color:var(--t4);font-weight:600;border-bottom:2px solid var(--border)">Mer</th>
-                          <th style="padding:6px 10px;text-align:center;color:var(--t4);font-weight:600;border-bottom:2px solid var(--border)">Jeu</th>
-                          <th style="padding:6px 10px;text-align:center;color:var(--t4);font-weight:600;border-bottom:2px solid var(--border)">Ven</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td style="padding:8px 10px;color:var(--t2);font-weight:500">Matin (9h–12h)</td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Lun matin" onchange="syncFCheckTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mar matin" onchange="syncFCheckTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mer matin" onchange="syncFCheckTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Jeu matin" onchange="syncFCheckTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Ven matin" onchange="syncFCheckTable(this)"></label></td>
-                        </tr>
-                        <tr style="background:var(--bg)">
-                          <td style="padding:8px 10px;color:var(--t2);font-weight:500">Midi (12h–14h)</td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Lun midi" onchange="syncFCheckTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mar midi" onchange="syncFCheckTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mer midi" onchange="syncFCheckTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Jeu midi" onchange="syncFCheckTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Ven midi" onchange="syncFCheckTable(this)"></label></td>
-                        </tr>
-                        <tr>
-                          <td style="padding:8px 10px;color:var(--t2);font-weight:500">Après-midi (14h–18h)</td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Lun après-midi" onchange="syncFCheckTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mar après-midi" onchange="syncFCheckTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Mer après-midi" onchange="syncFCheckTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Jeu après-midi" onchange="syncFCheckTable(this)"></label></td>
-                          <td style="text-align:center;padding:8px 4px"><label class="dispo-cell"><input type="checkbox" name="dispo" value="Ven après-midi" onchange="syncFCheckTable(this)"></label></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div style="margin-top:10px">
-                    <label class="fpill-opt" style="display:inline-flex" id="pill-dispo-autres">
-                      <input type="checkbox" name="dispo" value="Autres" id="radio-dispo-autres" onchange="syncFCheckTable(this);document.getElementById('dispo-autres-wrap').style.display=this.checked?'block':'none'">
-                      <span>✏️ Autres / pas de préférence</span>
-                    </label>
-                  </div>
-                  <div id="dispo-autres-wrap" style="display:none;margin-top:8px">
-                    <input class="fi" type="text" name="dispo_autres" placeholder="Précisez vos disponibilités…">
+                  <label class="fl">Q10. Avez-vous déjà des contenus existants exploitables ?</label>
+                  <div class="fhint">Vidéo, livre blanc, article, étude, outils… (avec liens si possible)</div>
+                  <textarea class="fta" name="contenus_existants" placeholder="Listez vos contenus disponibles..."></textarea>
+                </div>
+                <div class="fw">
+                  <label class="fl">Q11. Avez-vous déjà une communauté / audience qui peut servir d'appui ?</label>
+                  <div class="fhint">Newsletter, LinkedIn, Slack… (ex : OUI → 13K abonnés LinkedIn)</div>
+                  <textarea class="fta" name="audience_existante" placeholder="Décrivez votre audience actuelle (canal + volume)..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- ÉTAPE 6 - Section 6 : ICP (Client idéal) -->
+            <div class="form-step" data-step="6" style="display:none">
+              <div class="fsec">
+                <div class="fsec-title"><span class="fsec-num">6</span>🎯 ICP - Client idéal</div>
+                <div class="fw">
+                  <label class="fl">Q12.a Secteur d'activité <span>*</span></label>
+                  <select class="fsel" name="icp_secteur" required>
+                    <option value="">- Sélectionnez un secteur -</option>
+                    <option value="Tech / SaaS / IT">Tech / SaaS / IT</option>
+                    <option value="E-commerce / Retail">E-commerce / Retail</option>
+                    <option value="Finance / Banque / Assurance">Finance / Banque / Assurance</option>
+                    <option value="Industrie / Manufacturing">Industrie / Manufacturing</option>
+                    <option value="Santé / Médical / Pharma">Santé / Médical / Pharma</option>
+                    <option value="Immobilier">Immobilier</option>
+                    <option value="BTP / Construction">BTP / Construction</option>
+                    <option value="Éducation / Formation">Éducation / Formation</option>
+                    <option value="Marketing / Communication / Médias">Marketing / Communication / Médias</option>
+                    <option value="Conseil / Consulting">Conseil / Consulting</option>
+                    <option value="Restauration / Hôtellerie / Tourisme">Restauration / Hôtellerie / Tourisme</option>
+                    <option value="Énergie / Environnement">Énergie / Environnement</option>
+                    <option value="Agriculture / Agroalimentaire">Agriculture / Agroalimentaire</option>
+                    <option value="Transport / Logistique">Transport / Logistique</option>
+                    <option value="Services aux entreprises (B2B)">Services aux entreprises (B2B)</option>
+                    <option value="Services aux particuliers (B2C)">Services aux particuliers (B2C)</option>
+                    <option value="Luxe / Mode / Beauté">Luxe / Mode / Beauté</option>
+                    <option value="Sport / Loisirs / Divertissement">Sport / Loisirs / Divertissement</option>
+                    <option value="Juridique / Cabinet d'avocats">Juridique / Cabinet d'avocats</option>
+                    <option value="Ressources humaines / Recrutement">Ressources humaines / Recrutement</option>
+                    <option value="Autre">Autre</option>
+                  </select>
+                </div>
+                <div class="fw">
+                  <label class="fl">Q12.b Fonction du contact <span>*</span></label>
+                  <input class="fi" type="text" name="icp_fonction" required placeholder="ex : CEO, DSI, Directeur Marketing, Responsable RH…">
+                </div>
+                <div class="fw">
+                  <label class="fl">Q12.c Taille de l'entreprise <span>*</span></label>
+                  <div class="fhint">Plusieurs choix possibles</div>
+                  <div class="fpill-group" data-name="icp_taille" data-required-multi="1">
+                    <label class="fpill-opt"><input type="checkbox" name="icp_taille" value="A. Auto-entrepreneur (Self-employed)" onchange="syncFCheck(this)"><span>A. Auto-entrepreneur</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_taille" value="B. 2 à 10 employés" onchange="syncFCheck(this)"><span>B. 2 à 10</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_taille" value="C. 11 à 50 employés" onchange="syncFCheck(this)"><span>C. 11 à 50</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_taille" value="D. 51 à 200 employés" onchange="syncFCheck(this)"><span>D. 51 à 200</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_taille" value="E. 201 à 500 employés" onchange="syncFCheck(this)"><span>E. 201 à 500</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_taille" value="F. 501 à 1 000 employés" onchange="syncFCheck(this)"><span>F. 501 à 1 000</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_taille" value="G. 1 001 à 5 000 employés" onchange="syncFCheck(this)"><span>G. 1 001 à 5 000</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_taille" value="H. 5 001 à 10 000 employés" onchange="syncFCheck(this)"><span>H. 5 001 à 10 000</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_taille" value="I. 10 001 employés et plus" onchange="syncFCheck(this)"><span>I. 10 001 et +</span></label>
                   </div>
                 </div>
-                <div class="fw"><label class="fl">Quelque chose d'autre à nous dire ?</label><textarea class="fta" name="notes" placeholder="Contraintes particulières, questions, contexte utile..."></textarea></div>
+                <div class="fw">
+                  <label class="fl">Q12.d Zone géographique <span>*</span></label>
+                  <div class="fhint">Plusieurs choix possibles</div>
+                  <div class="fpill-group" data-name="icp_zone" data-required-multi="1">
+                    <label class="fpill-opt"><input type="checkbox" name="icp_zone" value="A. France" onchange="syncFCheck(this);toggleZoneAutre()"><span>A. France</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_zone" value="B. Europe" onchange="syncFCheck(this);toggleZoneAutre()"><span>B. Europe</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_zone" value="C. US" onchange="syncFCheck(this);toggleZoneAutre()"><span>C. US</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_zone" value="D. UK" onchange="syncFCheck(this);toggleZoneAutre()"><span>D. UK</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_zone" value="E. Allemagne" onchange="syncFCheck(this);toggleZoneAutre()"><span>E. Allemagne</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_zone" value="F. Espagne" onchange="syncFCheck(this);toggleZoneAutre()"><span>F. Espagne</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_zone" value="G. Italie" onchange="syncFCheck(this);toggleZoneAutre()"><span>G. Italie</span></label>
+                    <label class="fpill-opt"><input type="checkbox" name="icp_zone" value="H. Autre" id="chk-zone-autre" onchange="syncFCheck(this);toggleZoneAutre()"><span>✏️ H. Autre</span></label>
+                  </div>
+                  <div id="zone-autre-wrap" style="display:none;margin-top:10px">
+                    <input class="fi" type="text" id="zone-autre-text" name="icp_zone_autre" placeholder="Précisez la zone géographique…">
+                  </div>
+                </div>
+                <div class="fw">
+                  <label class="fl">Q13. En volume brut, combien de prospects activables estimez-vous dans ce marché ? <span>*</span></label>
+                  <div class="fhint">Doit être &gt; plusieurs milliers pour que l'outbound scale réellement</div>
+                  <input class="fi" type="text" name="volume_prospects" required placeholder="ex : 15 000, 50 000, 200 000+">
+                </div>
+              </div>
+            </div>
+
+            <!-- ÉTAPE 7 - Section 7 : Preuves & références -->
+            <div class="form-step" data-step="7" style="display:none">
+              <div class="fsec">
+                <div class="fsec-title"><span class="fsec-num">7</span>🏆 Preuves & références</div>
+                <div class="fw">
+                  <label class="fl">Q14. Quelles sont vos références / cas clients les plus forts ? <span>*</span></label>
+                  <div class="fhint">Nom du client + résultats obtenus</div>
+                  <textarea class="fta" name="references_clients" required placeholder="ex : Client X - +120% de leads en 3 mois ; Client Y - ROI x4 en 6 mois..."></textarea>
+                </div>
+                <div class="fw">
+                  <label class="fl">Q15. Disposez-vous de témoignages / études de cas que nous pourrons réutiliser ?</label>
+                  <textarea class="fta" name="temoignages" placeholder="Liens vidéos, PDF, citations, captures, études de cas..."></textarea>
+                </div>
               </div>
               <div class="fsec" style="background:var(--purple-light);border-color:var(--purple-mid)">
                 <div style="display:flex;gap:10px;align-items:flex-start">
@@ -774,7 +884,7 @@ a{text-decoration:none;color:inherit}
             <div class="c-avatar" id="c-avatar"><img src="contact.webp" alt="Igor"></div>
             <div>
               <div class="c-name" id="c-name">Équipe Nevios</div>
-              <div class="c-role">Chef de projet — Nevios</div>
+              <div class="c-role">Chef de projet - Nevios</div>
               <div class="c-links">
                 <a class="c-link" id="c-email-link" href="mailto:contact@nevios.fr">
                   <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
@@ -821,7 +931,7 @@ a{text-decoration:none;color:inherit}
 /* ═══════════════════════════════════
    CLERK AUTH
    ═══════════════════════════════════ */
-// Clerk initialisé immédiatement (synchrone) — avant toute interaction utilisateur
+// Clerk initialisé immédiatement (synchrone) - avant toute interaction utilisateur
 let clerkAuth   = window.Clerk; // instance auto-créée par le CDN
 let clerkReady  = clerkAuth.load(); // Lance le chargement immédiatement
 
@@ -843,7 +953,7 @@ async function nocoFetch(path, query = '', method = 'GET', data = null) {
 }
 
 /* ═══════════════════════════════════
-   SÉCURITÉ — helpers
+   SÉCURITÉ - helpers
    ═══════════════════════════════════ */
 // Anti-XSS : échappe les données NocoDB avant injection dans le HTML
 function esc(s) {
@@ -854,11 +964,23 @@ function esc(s) {
     .replace(/"/g,'&quot;')
     .replace(/'/g,'&#39;');
 }
-// Session sans mot de passe — ne jamais stocker MotDePasse en sessionStorage
+// Session sans mot de passe - ne jamais stocker MotDePasse en sessionStorage
 function saveSession(c) {
   const safe = Object.assign({}, c);
   delete safe.MotDePasse;
   sessionStorage.setItem('nevios_client', JSON.stringify(safe));
+}
+
+const SESSION_DURATION_MS = 24 * 60 * 60 * 1000; // 24h
+
+function markLoginTime() {
+  localStorage.setItem('nevios_login_at', Date.now().toString());
+}
+
+function isSessionExpired() {
+  const t = localStorage.getItem('nevios_login_at');
+  if (!t) return true;
+  return (Date.now() - parseInt(t, 10)) > SESSION_DURATION_MS;
 }
 
 /* ═══════════════════════════════════
@@ -866,7 +988,7 @@ function saveSession(c) {
    ═══════════════════════════════════ */
 let client = null;
 let fStep  = 1;
-const F_STEPS = 4;
+const F_STEPS = 7;
 
 /* étapes et réunions chargées dynamiquement depuis NocoDB */
 let currentSteps    = [];
@@ -924,11 +1046,12 @@ async function fetchAndInitByEmail(email) {
     `/api/v1/db/data/noco/${NOCODB.baseId}/${NOCODB.tableId}`,
     `where=(Email,eq,${encodeURIComponent(email)})&limit=1`
   );
-  if (!res.ok) { const t = await res.text(); throw new Error('API '+res.status+' — '+t.slice(0,120)); }
+  if (!res.ok) { const t = await res.text(); throw new Error('API '+res.status+' - '+t.slice(0,120)); }
   const data = await res.json();
   if (!data.list || !data.list.length) throw new Error('Aucun compte trouvé pour cet email.');
   client = data.list[0];
   saveSession(client);
+  markLoginTime();
   initApp(client);
 }
 /* ─── Toggle affichage mot de passe ─── */
@@ -1090,6 +1213,7 @@ async function handleLogout() {
   try { await clerkAuth.signOut(); } catch(e) {}
   sessionStorage.removeItem('nevios_client');
   sessionStorage.removeItem('nevios_page');
+  localStorage.removeItem('nevios_login_at');
   client = null;
   document.getElementById('app-screen').style.display  = 'none';
   document.getElementById('login-screen').style.display = 'block';
@@ -1113,18 +1237,17 @@ function initApp(c) {
   document.getElementById('login-screen').style.display   = 'none';
   document.getElementById('app-screen').style.display     = 'block';
 
-  const name    = c.Nom || c.Entreprise || '—';
+  const name    = c.Nom || c.Entreprise || '-';
   // Prénom depuis Clerk en priorité, sinon NocoDB
   const contact = (clerkAuth && clerkAuth.user && clerkAuth.user.firstName) || c['Prénom'] || c.Prenom || name;
   const initials = contact.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || '?';
 
-  document.getElementById('sb-name').textContent       = [contact, c.Nom].filter(Boolean).join(' ') || c.Entreprise || '—';
+  document.getElementById('sb-name').textContent       = [contact, c.Nom].filter(Boolean).join(' ') || c.Entreprise || '-';
   document.getElementById('greeting-name').textContent = contact;
   document.getElementById('topbar-avatar').textContent = initials;
 
   document.getElementById('form-subject').value   = `[Nevios Onboarding] ${name}`;
   document.getElementById('form-client-id').value = c.Entreprise || '';
-  if (c.Email) document.getElementById('field-email-notif').value = c.Email;
 
   applyFormState(c);
 
@@ -1148,7 +1271,7 @@ function initApp(c) {
     buildMeetings(reunions);
   }).catch(err => {
     console.error('[initApp] Erreur chargement données:', err);
-    document.getElementById('timeline') && (document.getElementById('timeline').innerHTML =
+    document.getElementById('roadmap-container') && (document.getElementById('roadmap-container').innerHTML =
       '<p style="color:var(--t4);font-size:13px;padding:12px 0">Impossible de charger les données. Vérifiez votre connexion et rechargez la page.</p>');
   });
 }
@@ -1193,10 +1316,13 @@ async function fetchEtapes(clientId) {
     }
     const data = await res.json();
     return (data.list || []).map((e, i) => ({
-      icon:   String(i + 1),
-      title:  e.Title || e.Titre || 'Étape',
-      desc:   e.Description || '',
-      status: e.Statut      || 'pending',
+      icon:     String(i + 1),
+      title:    e.Title       || e.Titre       || 'Étape',
+      desc:     e.Description || '',
+      status:   e.Statut      || 'pending',
+      phase:    e.Phase  != null ? String(e.Phase)  : '',
+      semaines: e.Semaines    || '',
+      objectif: e.Objectif    || '',
     }));
   } catch(e) { console.error('[Étapes] Exception:', e); return []; }
 }
@@ -1251,7 +1377,7 @@ function buildOverview(c, etapes, meetings) {
 
   if (c.DateDebut) {
     const days = Math.floor((Date.now() - new Date(c.DateDebut)) / 86400000);
-    document.getElementById('stat-days').textContent = days >= 0 ? days : '—';
+    document.getElementById('stat-days').textContent = days >= 0 ? days : '-';
   }
 
   const nextM = meetings.find(m => !m.date || new Date(m.date) > Date.now()) || null;
@@ -1287,42 +1413,112 @@ function buildOverview(c, etapes, meetings) {
 function getDefaultSteps() {
   const onboardingDone = client && (client.Onboarding === true || client.Onboarding === 1 || client.Onboarding === 'true');
   return [
-    { icon:'1', title:'Réunion de lancement',     desc:'Kick-off pour aligner les objectifs',     status:'done' },
-    { icon:'2', title:'Collecte des informations', desc:"Remplissage du formulaire d'onboarding", status: onboardingDone ? 'done' : 'active' },
+    { icon:'1', title:'Réunion de lancement',     desc:'Kick-off pour aligner les objectifs',     status:'done',   phase:'', semaines:'', objectif:'' },
+    { icon:'2', title:'Collecte des informations', desc:"Remplissage du formulaire d'onboarding", status: onboardingDone ? 'done' : 'active', phase:'', semaines:'', objectif:'' },
   ];
 }
 
-function buildTimeline(etapes) {
-  const el       = document.getElementById('timeline');
-  const defaults = getDefaultSteps();
-  const nocodb   = etapes.map((s, i) => ({...s, icon: String(defaults.length + i + 1)}));
-  const allSteps = [...defaults, ...nocodb];
+/* ── Roadmap par phases ── */
+function buildRoadmap(etapes) {
+  const container = document.getElementById('roadmap-container');
+  if (!container) return;
 
-  el.innerHTML = allSteps.map((s, i) => {
-    const st    = s.status;
-    const lbl   = st==='done'?'Terminé':st==='active'?'En cours':'À venir';
-    const badge = st==='done'?'✓ Complété':st==='active'?'⚡ En cours':'○ À venir';
-    return `<div class="tl-item">
-      <div class="tl-left">
-        <div class="tl-icon ${st}">${st==='done'?'✓':s.icon}</div>
-      </div>
-      <div class="tl-body">
-        <div class="tl-status ${st}">${lbl}</div>
-        <div class="tl-title">${esc(s.title)}</div>
-        <div class="tl-desc">${esc(s.desc)}</div>
-        <div class="tl-badge ${st}">${badge}</div>
-      </div>
-    </div>`;
-  }).join('');
+  const defaults = getDefaultSteps();
+  const allSteps = [...defaults, ...etapes];
+
+  const total   = allSteps.length;
+  const done    = allSteps.filter(s => s.status === 'done').length;
+  const active  = allSteps.filter(s => s.status === 'active').length;
+  const pending = total - done - active;
+  const pct     = total > 0 ? Math.round(done / total * 100) : 0;
+
+  const preSteps    = allSteps.filter(s => !s.phase || s.phase === '' || s.phase === '0');
+  const phase1Steps = allSteps.filter(s => String(s.phase) === '1');
+  const phase2Steps = allSteps.filter(s => String(s.phase) === '2');
+
+  const icoCheck = `<svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`;
+  const icoBolt  = `<svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>`;
+  const icoClock = `<svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>`;
+
+  let html = `<div class="rm-header">
+    <div class="rm-header-top">
+      <div class="rm-header-label">Progression globale du projet</div>
+      <div class="rm-header-pct">${pct}%</div>
+    </div>
+    <div class="rm-bar"><div class="rm-bar-fill" style="width:${pct}%"></div></div>
+    <div class="rm-chips">
+      <span class="rmc done">${icoCheck} ${done} terminée${done > 1 ? 's' : ''}</span>
+      ${active > 0 ? `<span class="rmc active">${icoBolt} ${active} en cours</span>` : ''}
+      <span class="rmc pending">${icoClock} ${pending} à venir</span>
+    </div>
+  </div>`;
+
+  if (preSteps.length)    html += _renderPhase('pre', 'Démarrage',                   '',         preSteps);
+  if (phase1Steps.length) html += _renderPhase('p1',  'Phase 1 - Setup & warm-up',   'S1 – S4',  phase1Steps);
+  if (phase2Steps.length) html += _renderPhase('p2',  'Phase 2 - Cold email actif',  'S5 – S12', phase2Steps);
+
+  container.innerHTML = html;
 }
+
+function _renderPhase(key, name, weeks, steps) {
+  const done  = steps.filter(s => s.status === 'done').length;
+  const pct   = steps.length > 0 ? Math.round(done / steps.length * 100) : 0;
+  const label = key === 'pre' ? 'Démarrage' : key === 'p1' ? 'Phase 1' : 'Phase 2';
+  return `<div class="rm-phase">
+    <div class="rm-phase-hd ph-${key}">
+      <div class="rm-phase-badge">${label}</div>
+      <div class="rm-phase-info">
+        <div class="rm-phase-name">${esc(name)}</div>
+        ${weeks ? `<div class="rm-phase-wk">${esc(weeks)}</div>` : ''}
+      </div>
+      <div class="rm-phase-right">
+        <span class="rm-phase-pct">${pct}%</span>
+        <div class="rm-phase-minibar"><div class="rm-phase-minibar-fill" style="width:${pct}%"></div></div>
+      </div>
+    </div>
+    <div class="rm-steps-wrap">${steps.map((s, i) => _renderStepCard(s, key, i)).join('')}</div>
+  </div>`;
+}
+
+function _renderStepCard(s, phaseKey, idx) {
+  const st   = s.status || 'pending';
+  const lbl  = st === 'done' ? 'Terminé' : st === 'active' ? 'En cours' : 'À venir';
+  const dotIcon = st === 'done'
+    ? `<svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`
+    : st === 'active'
+    ? `<svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>`
+    : `<svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>`;
+  const lines    = s.desc ? s.desc.split('\n').map(l => l.trim()).filter(Boolean) : [];
+  const descHtml = lines.length > 1
+    ? `<ul class="rm-step-bullets">${lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul>`
+    : lines.length === 1 ? `<ul class="rm-step-bullets"><li>${esc(lines[0])}</li></ul>` : '';
+  const objHtml = s.objectif
+    ? `<div class="rm-step-obj">🎯 Objectif : ${esc(s.objectif)}</div>` : '';
+  const wkHtml  = s.semaines ? `<div class="rm-step-wk">${esc(s.semaines)}</div>` : '';
+
+  return `<div class="rm-step st-${st} ph-${phaseKey}" style="animation:slideStep .35s ease ${idx * 0.06}s both">
+    <div class="rm-step-left">
+      ${wkHtml}
+      <div class="rm-step-dot ${st}">${dotIcon}</div>
+    </div>
+    <div class="rm-step-body">
+      <div class="rm-step-lbl ${st}">${lbl}</div>
+      <div class="rm-step-title">${esc(s.title)}</div>
+      ${descHtml}${objHtml}
+    </div>
+  </div>`;
+}
+
+/* ── Alias rétrocompat ── */
+function buildTimeline(etapes) { buildRoadmap(etapes); }
 
 /* ═══════════════════════════════════
    RÉUNIONS (données depuis fetchReunions)
    ═══════════════════════════════════ */
 function meetingCardHTML(m) {
   const d   = m._dt || (m.date ? new Date(m.date) : null);
-  const day = d ? d.getDate() : '—';
-  const mon = d ? d.toLocaleString('fr-FR',{month:'short'}).replace('.','') : '—';
+  const day = d ? d.getDate() : '-';
+  const mon = d ? d.toLocaleString('fr-FR',{month:'short'}).replace('.','') : '-';
   const full= d ? d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : 'Date à confirmer';
   const tc  = m.type==='presentiel'?'presentiel':'visio';
   const tl  = m.type==='presentiel'?'📍 Présentiel':'💻 Visio';
@@ -1460,9 +1656,42 @@ function syncFCheckTable(input) {
 function toggleAutres(input) {
   const wrap = document.getElementById('autres-wrap');
   const txt  = document.getElementById('autres-text');
+  if (!wrap || !txt) return;
   if (input.checked) {
     wrap.style.display = 'block';
     txt.focus();
+  } else {
+    wrap.style.display = 'none';
+    txt.value = '';
+  }
+}
+function toggleValidationDetails() {
+  const oui  = document.querySelector('input[name="offre_validee"][value="OUI"]');
+  const non  = document.querySelector('input[name="offre_validee"][value="NON"]');
+  const wrap = document.getElementById('validation-details-wrap');
+  const lbl  = document.getElementById('validation-details-label');
+  const ta   = document.getElementById('offre-validee-details');
+  if (!wrap || !lbl || !ta) return;
+  if (oui && oui.checked) {
+    wrap.style.display = 'block';
+    lbl.textContent = 'Quels résultats avez-vous obtenus ?';
+    ta.placeholder  = 'ex : 12 clients signés, ROI x3, premiers retours de prospects payants...';
+  } else if (non && non.checked) {
+    wrap.style.display = 'block';
+    lbl.textContent = 'Quels premiers signaux du marché vous laissent penser que c\'est vendable ?';
+    ta.placeholder  = 'Discussions exploratoires, intérêt manifesté, demandes spontanées, benchmarks...';
+  } else {
+    wrap.style.display = 'none';
+    ta.value = '';
+  }
+}
+function toggleZoneAutre() {
+  const autre = document.getElementById('chk-zone-autre');
+  const wrap  = document.getElementById('zone-autre-wrap');
+  const txt   = document.getElementById('zone-autre-text');
+  if (!wrap || !txt) return;
+  if (autre && autre.checked) {
+    wrap.style.display = 'block';
   } else {
     wrap.style.display = 'none';
     txt.value = '';
@@ -1487,10 +1716,15 @@ function formNext() {
       return;
     }
   }
-  if (fStep === 2 && !cur.querySelectorAll('input[name="secteurs"]:checked').length) {
-    const group = cur.querySelector('.fpill-group[data-name="secteurs"]');
-    if (group) { group.style.outline = '2px solid var(--red)'; group.style.borderRadius = '8px'; }
-    return;
+  // Groupes de cases à cocher obligatoires (au moins une sélection)
+  for (const group of cur.querySelectorAll('.fpill-group[data-required-multi]')) {
+    const name = group.dataset.name;
+    if (!group.querySelectorAll(`input[name="${name}"]:checked`).length) {
+      group.style.outline = '2px solid var(--red)';
+      group.style.borderRadius = '8px';
+      group.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
   }
   cur.style.display = 'none';
   fStep++;
@@ -1527,28 +1761,33 @@ async function handleFormSubmit(e) {
 
   // Mapping champ → libellé complet
   const LABELS = {
-    nom:               'Nom et prénom',
-    email:             'Email',
-    tel:               'Téléphone',
-    website:           'Site web de l\'entreprise',
-    secteurs:          'Types de clients à cibler en priorité',
-    secteurs_autres:   'Autres types de clients (précision)',
-    zone:              'Zone prioritaire',
-    zones_exclure:     'Zones à exclure',
-    ticket_amenagement:'Budget moyen d\'un projet d\'aménagement',
-    argument:          'Argument principal face à un concurrent',
-    positionnement:    'En 3 mots, l\'entreprise c\'est…',
-    client_reference:  'Client actuel dont vous êtes fier',
-    exemples_messages: 'Exemples de messages envoyés à des prospects',
-    photos_link:       'Lien photos de réalisations',
-    service_priorite:  'Ce qu\'on met en avant dans les emails',
-    email_notif:       'Email de notification si un prospect répond',
-    autres_contacts:   'Autres personnes à tenir informées',
-    calendly:          'Lien de prise de rendez-vous en ligne',
-    canal_suivi:       'Canal préféré pour les points hebdo',
-    dispo:             'Créneau idéal pour le point hebdo',
-    dispo_autres:      'Créneau idéal (précision)',
-    notes:             'Notes / informations complémentaires',
+    // Section 1 - Problématique ciblée
+    probleme:              'Q1. Problématique unique et douloureuse des clients cibles',
+    urgence:               'Q2. Pourquoi cette problématique est urgente et prioritaire aujourd\'hui',
+    // Section 2 - Solution & valeur
+    solution:              'Q3. Description de la solution',
+    valeurs_ajoutees:      'Q4. Valeurs ajoutées immédiates de la solution',
+    rapidite_resultats:    'Q5. Rapidité des résultats',
+    // Section 3 - Différenciation & rémunération
+    differenciation:       'Q6. Différenciation face aux concurrents (océan rouge)',
+    modele_remuneration:   'Q7. Modèle de rémunération innovant ou garantie',
+    // Section 4 - Validation marché
+    offre_validee:         'Q8. Offre déjà validée auprès de clients ou prospects',
+    offre_validee_details: 'Q8 bis. Détails (résultats si OUI / signaux si NON)',
+    // Section 5 - Stratégies d'acquisition
+    strategies:            'Q9. Stratégies d\'acquisition jugées adaptées',
+    contenus_existants:    'Q10. Contenus existants exploitables',
+    audience_existante:    'Q11. Communauté / audience existante',
+    // Section 6 - ICP
+    icp_secteur:           'Q12.a Secteur d\'activité (ICP)',
+    icp_fonction:          'Q12.b Fonction du contact (ICP)',
+    icp_taille:            'Q12.c Taille de l\'entreprise (ICP)',
+    icp_zone:              'Q12.d Zone géographique (ICP)',
+    icp_zone_autre:        'Q12.d Zone géographique - précision (Autre)',
+    volume_prospects:      'Q13. Volume brut de prospects activables',
+    // Section 7 - Preuves & références
+    references_clients:    'Q14. Références / cas clients les plus forts',
+    temoignages:           'Q15. Témoignages / études de cas réutilisables',
   };
 
   // Collecte des valeurs brutes
@@ -1590,9 +1829,9 @@ async function handleFormSubmit(e) {
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(data),
     });
-    if (!res.ok) { const t = await res.text(); throw new Error('Erreur ' + res.status + ' — ' + t.slice(0, 120)); }
+    if (!res.ok) { const t = await res.text(); throw new Error('Erreur ' + res.status + ' - ' + t.slice(0, 120)); }
 
-    // Succès — cocher Onboarding dans NocoDB
+    // Succès - cocher Onboarding dans NocoDB
     if (client) {
       const rowId = client.Id || client.id;
       nocoFetch(
@@ -1640,6 +1879,16 @@ function toggleFaq(el) { el.classList.toggle('open'); }
     // 2. Pas de session → login
     if (!clerkAuth.user) { showLogin(); return; }
 
+    // 2b. Session expirée (> 24h) → déconnexion forcée
+    if (isSessionExpired()) {
+      try { await clerkAuth.signOut(); } catch(e) {}
+      sessionStorage.removeItem('nevios_client');
+      sessionStorage.removeItem('nevios_page');
+      localStorage.removeItem('nevios_login_at');
+      showLogin();
+      return;
+    }
+
     // 3. Récupérer l'email Clerk
     const email = clerkAuth.user.primaryEmailAddress
       ? clerkAuth.user.primaryEmailAddress.emailAddress
@@ -1664,7 +1913,7 @@ function toggleFaq(el) { el.classList.toggle('open'); }
       `where=(Email,eq,${encodeURIComponent(email)})&limit=1`
     );
     if (!res.ok) {
-      // NocoDB en panne — si cache déjà affiché on laisse, sinon login
+      // NocoDB en panne - si cache déjà affiché on laisse, sinon login
       if (document.getElementById('app-screen').style.display === 'none') showLogin();
       return;
     }
@@ -1680,7 +1929,7 @@ function toggleFaq(el) { el.classList.toggle('open'); }
     } else {
       // Déjà affiché avec cache → mettre à jour
       const freshPrenom = (clerkAuth && clerkAuth.user && clerkAuth.user.firstName) || fresh['Prénom'] || fresh.Prenom || '';
-      document.getElementById('sb-name').textContent = [freshPrenom, fresh.Nom].filter(Boolean).join(' ') || fresh.Entreprise || '—';
+      document.getElementById('sb-name').textContent = [freshPrenom, fresh.Nom].filter(Boolean).join(' ') || fresh.Entreprise || '-';
       applyFormState(fresh);
       const [etapes, reunions] = await Promise.all([
         fetchEtapes(fresh.Entreprise),

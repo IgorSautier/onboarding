@@ -1,0 +1,5 @@
+# Local Netlify folder
+.netlify
+
+# Variables d'environnement locales
+.env
