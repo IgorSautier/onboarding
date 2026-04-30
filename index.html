@@ -1238,8 +1238,8 @@ function initApp(c) {
   document.getElementById('app-screen').style.display     = 'block';
 
   const name    = c.Nom || c.Entreprise || '-';
-  // Prénom depuis Clerk en priorité, sinon NocoDB
-  const contact = (clerkAuth && clerkAuth.user && clerkAuth.user.firstName) || c['Prénom'] || c.Prenom || name;
+  // Prénom depuis NocoDB en priorité (source de vérité client), sinon Clerk
+  const contact = c['Prénom'] || c.Prenom || (clerkAuth && clerkAuth.user && clerkAuth.user.firstName) || name;
   const initials = contact.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || '?';
 
   document.getElementById('sb-name').textContent       = [contact, c.Nom].filter(Boolean).join(' ') || c.Entreprise || '-';
@@ -1928,7 +1928,7 @@ function toggleFaq(el) { el.classList.toggle('open'); }
       initApp(fresh);
     } else {
       // Déjà affiché avec cache → mettre à jour
-      const freshPrenom = (clerkAuth && clerkAuth.user && clerkAuth.user.firstName) || fresh['Prénom'] || fresh.Prenom || '';
+      const freshPrenom = fresh['Prénom'] || fresh.Prenom || (clerkAuth && clerkAuth.user && clerkAuth.user.firstName) || '';
       document.getElementById('sb-name').textContent = [freshPrenom, fresh.Nom].filter(Boolean).join(' ') || fresh.Entreprise || '-';
       applyFormState(fresh);
       const [etapes, reunions] = await Promise.all([
